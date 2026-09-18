@@ -17,6 +17,8 @@
 
 ## 2. 综合例题
 
+![fork/join 综合例题原始截图](assets/fork-join-example-code.png)
+
 ```systemverilog
 program test;
   initial begin

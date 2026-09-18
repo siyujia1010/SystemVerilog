@@ -14,6 +14,8 @@
 
 ## 2. 断言代码（按原始笔记顺序，注释标出对应规格编号）
 
+![原始笔记截图](assets/req-ack-assertions-code.png)
+
 ```systemverilog
 // 1. The client and server are synchronized to a master clock.
 // 2. The request (req) and acknowledge (ack) signals are single-bit signals.
@@ -45,6 +47,10 @@ ap_req_ack2: assert property (@(posedge clk) ack |-> past_req);
 > 注：`initial a_no_initial_ack: assert property (...)` 这一行按原始笔记原样保留；从命名看它检查的是"仿真最开始、第一次 req 出现之前不应该有 ack"这种边界情况，和下面 `ap_no_req_till_ack` / `ap_no_ack_wo_req` 一起，从三个角度共同覆盖规格 5。
 
 ## 3. 时序图：req / ack / past_req 的关系
+
+![req/ack/past_req 时序图](assets/req-ack-timing-diagram.png)
+
+ASCII 版本（方便在不支持图片的地方查看）：
 
 ```
                      |<---------- 允许 ack 出现的窗口 (1~5 拍) ---------->|
