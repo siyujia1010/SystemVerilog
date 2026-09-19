@@ -16,14 +16,11 @@
 | [01-data-types/04-arrays.md](01-data-types/04-arrays.md) | packed / unpacked / dynamic / associative / queue 数组，及流操作符 `{>>{}}` / `{<<{}}` |
 | [01-data-types/05-streaming-operator.md](01-data-types/05-streaming-operator.md) | 流操作符深入：`{<<n{...}}` 切片粒度、nibble swap / byte swap（含配图，04-arrays §5 的深入版） |
 
-### 第二章：进程与同步（task 生命周期 / 事件 / 信号量）
-
-> 本章内部是外层/内层关系：01 fork/join 管"线程怎么启动和收拢"（外层），02 管"线程之间共享什么、怎么同步"（内层）。
+### 第二章：进程控制与同步（fork/join / task 生命周期 / 事件 / 信号量）
 
 | 文件 | 内容 |
 |---|---|
-| [02-process-sync/01-fork-and-process-control.md](02-process-sync/01-fork-and-process-control.md) | fork / join / join_any / join_none / wait fork 进程控制，及 event/semaphore/mailbox 速记 |
-| [02-process-sync/02-tasks-process-sync.md](02-process-sync/02-tasks-process-sync.md) | `automatic` vs `static` 并发竞态、`$display/$strobe/$monitor`、`@` vs `wait(.triggered)` 竞态、semaphore |
+| [02-process-sync/01-process-control-and-sync.md](02-process-sync/01-process-control-and-sync.md) | fork / join / join_any / join_none / wait fork 及综合例题；`automatic` vs `static` 并发竞态；`$display/$strobe/$monitor`；`@` vs `wait(.triggered)` 竞态；semaphore；mailbox |
 
 ### 第三章：随机约束（Constrained Random）
 
@@ -51,8 +48,7 @@
 
 - [x] 第一章：数据类型（string / enum / struct / 数组）—— 已完成
 - [x] 第一章：流操作符深入（nibble swap / byte swap）—— 已完成
-- [x] 第二章：fork/join 进程控制综合例题（join/join_any/join_none/wait fork）—— 已完成
-- [x] 第二章：进程与同步（automatic/static 竞态、@ vs wait、semaphore）—— 已完成
+- [x] 第二章：进程控制与同步（fork/join 综合例题、automatic/static 竞态、@ vs wait、semaphore/mailbox）—— 已完成
 - [x] 第三章：随机约束（inline 约束名字解析、soft、dist、solve...before）—— 已完成
 - [x] 第四章：功能覆盖率（covergroup/coverpoint/bins 数组 vs 单 bin/cross）—— 已完成，自测题全部答对
 - [x] 第五章：断言基础（14.9 并发断言基础、14.14 重叠 vs 非重叠蕴含、14.17 采样值函数）—— 已完成

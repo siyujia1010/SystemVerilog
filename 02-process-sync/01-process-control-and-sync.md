@@ -1,0 +1,178 @@
+# 进程控制与同步（fork/join · task 生命周期 · event · semaphore · mailbox）
+
+在写并发断言、testbench 里的多线程激励时经常要用到 `fork`。这篇按"线程怎么**启动和收拢**（§1–2）→ 线程启动后会遇到什么坑（§3–4）→ 线程之间怎么**同步和通信**（§5–7）"的顺序整理。
+
+## 1. fork 的四种收尾方式
+
+| 写法 | 语义 |
+|---|---|
+| `fork ... join` | 父线程阻塞，直到 fork 块内**全部**子进程执行完 |
+| `fork ... join_any` | 父线程阻塞，直到 fork 块内**任意一个**子进程执行完就继续（对只有一个子进程的 fork 块来说，效果等同于 `join`） |
+| `fork ... join_none` | 父线程**不阻塞**，fork 出子进程后立刻继续往下执行，子进程在后台独立运行 |
+| `wait fork;` | 阻塞当前进程，直到它**直接或间接派生出的所有子孙进程**（无论当初是用 `join`/`join_any`/`join_none` 中的哪一种派生的）全部结束 |
+
+另外还有 `disable fork;`，可以强制杀死当前进程派生出的所有还在运行的子进程（先记一笔，后续遇到具体例子再补充）。
+
+**最容易搞混的一点**：`join_none` 只是说"这一层 fork 块要不要等它的子进程"，并不代表这些子进程会被"放弃"或者提前终止——它们仍然在后台跑着。`wait fork` 则是不管当初用了哪种收尾方式，一律把所有还在运行的后代进程都等一遍。
+
+## 2. fork 综合例题
+
+![fork/join 综合例题原始截图](assets/fork-join-example-code.png)
+
+```systemverilog
+program test;
+  initial begin
+    fork : fork_main
+        fork : fork_1
+          #5 $display("time = %t : fork_1", $time);
+        join
+        fork : fork_2
+          #10 $display("time = %t : fork_2", $time);
+        join_any
+        fork : fork_3
+          #20 $display("time = %t : fork_3", $time);
+        join_none
+    join_none
+    #0;
+    $display("time = %t : Before wait fork", $time);
+    wait fork;
+    $display("time = %t : After wait fork", $time);
+    #100;
+  end
+endprogram
+```
+
+### 逐步推演
+
+外层 `initial` 用 `join_none` 派生 `fork_main`——**不等待**，立刻往下走到 `#0;`，所以 "Before wait fork" 在 t=0 附近就打印出来了，根本不会等 `fork_main` 里的三个子 fork 跑完。
+
+与此同时，`fork_main` 自己在 t=0 开始独立运行：
+
+1. 派生 `fork_1`，用的是 `join`——必须等 `fork_1` 跑完（5 个时间单位）才能往下走。→ **t=5：打印 "fork_1"**。
+2. 派生 `fork_2`，用的是 `join_any`——`fork_2` 内只有一个子进程，`join_any` 在"任意一个子进程完成"时就放行，对单进程来说效果等同于 `join`，所以还是要等它跑完（10 个时间单位，从 t=5 开始，到 t=15 结束）。→ **t=15：打印 "fork_2"**。
+3. 派生 `fork_3`，用的是 `join_none`——不等待，立刻继续。`fork_main` 这个 fork 块本身在这里就算"结束"了（因为它不用等 `fork_3`），但 `fork_3` 这个子进程仍然在后台独立跑着，还需要 20 个时间单位才会真正结束（t=15+20=**t=35**）。→ **t=35：打印 "fork_3"**。
+
+回到最外层 `initial`：在 t≈0 打印完 "Before wait fork" 之后，执行到 `wait fork;`——这里的关键是，`wait fork` 等待的是**这个进程派生出的所有子孙进程**，不管它们是用 `join`、`join_any` 还是 `join_none` 派生的，**全部**都要结束。也就是说，即使 `fork_3` 是用 `join_none` "放养"出去的，`wait fork` 依然会一直等到它跑完为止。所以：
+
+- `wait fork` 要一直等到最慢的那个子孙进程 `fork_3` 结束，也就是 **t=35**。
+- **t=35：打印 "After wait fork"**（紧跟在 "fork_3" 之后，因为两者在同一个仿真时刻，`fork_3` 的 `$display` 先执行完，`wait fork` 才检测到"全部子进程已结束"并唤醒主线程）。
+
+### 最终输出顺序
+
+```
+time =  0 : Before wait fork
+time =  5 : fork_1
+time = 15 : fork_2
+time = 35 : fork_3
+time = 35 : After wait fork
+```
+
+## 3. `automatic` vs `static` 任务 —— 并发竞态经典案例
+
+```systemverilog
+initial begin
+  fork
+    #10 run_ID(1, 50);
+    #20 run_ID(2, 0);
+  join
+end
+
+task automatic run_ID (int ID, int t);
+  #t;
+  $display("%d", ID);
+endtask
+//automatic : 2, 1
+//static    : 2, 2
+```
+
+时间线：
+- 分支A：时刻10调用 `run_ID(1, 50)` → 内部 `#50` 延迟 → 时刻60执行 `$display`
+- 分支B：时刻20调用 `run_ID(2, 0)` → 内部 `#0` 延迟（几乎立即）→ 时刻20执行 `$display`
+
+**如果是 `automatic`**：每次调用都各自拥有独立的一份 `ID`、`t` 存储空间，两次调用互不干扰。按实际完成时间排序：分支B先在时刻20打印`2`，分支A后在时刻60打印`1`。输出顺序：**2, 1**。
+
+**如果是 `static`**（默认情况，且被并发重入调用时）：`ID`、`t` 是全局唯一的一份存储，被所有调用共享。分支A在时刻10把共享的`ID`设为1，进入50时长的等待（`#t`延迟量在语句执行的那一刻求值一次并锁定，不会再变）；但在它还没醒来之前，时刻20分支B把同一个共享的`ID`覆盖成了2。等到时刻60分支A的延迟结束、真正执行`$display("%d", ID)`时，读到的`ID`已经是被分支B改写过的**2**，不是它自己原本的1。所以两次打印都是**2, 2**——这是共享静态局部变量在并发场景下"互相踩踏"的经典bug，也是为什么验证代码里几乎所有task都要显式加`automatic`。
+
+> V0课程未讲这个具体例子，笔记/Mehta补充内容。
+
+## 4. 打印类系统任务
+
+```systemverilog
+$display: 打印当前值
+$strobe: 打印当前时间step结束时的值（这里的step与`timescale的声明有关）
+$monitor: 假如任何值发生更改，则在当前时间步的末尾打印值
+          同时$monitor只能调用一次，顺序调用将覆盖前一个
+```
+
+- `$display`：打印**当前时刻**的值，语句执行时立即打印。
+- `$strobe`：打印当前时间步（time step）**结束时**的值——保证拿到这个时间步里最终稳定的值，而不是中间态。
+- `$monitor`：只要监控的信号发生任何变化，就在当前时间步末尾自动打印一次。**全局只能生效一个**，后调用的会覆盖前一个（不是叠加）。
+
+> V0课程未系统讲解这三者对比，笔记/Mehta补充内容。
+
+## 5. 事件阻塞：`@` vs `wait(event.triggered)`
+
+```systemverilog
+event e;
+-> e;               // 触发事件
+@e;                 // 阻塞直到事件被触发（边沿触发型）
+wait(e.triggered);  // 阻塞直到事件被触发（电平/状态型）
+wait_order(e1, e2); // 要求必须先等到e1触发，再等到e2触发，顺序不对会报错
+```
+
+这是SV里一个隐蔽的**竞争(race)问题**，也是容易考到的点：
+
+- `@e` 是**边沿检测**：只关心"触发"这个动作本身。如果触发发生的那一刻，线程还没执行到`@e`这一句（哪怕只差一个仿真步的调度顺序），这次触发就相当于没发生，线程会继续阻塞，得等下一次`->e`。
+- `wait(e.triggered)` 是**状态检测**：`e.triggered`是一个在当前时间步内会保持为真的状态标志，不是转瞬即逝的动作。无论检查语句在触发之前还是之后被调度，只要在同一个时间步内，查到的都是"已触发"，会立刻结束阻塞。
+
+如果`->e`和某个线程执行到`@e`/`wait(e.triggered)`恰好被调度在同一个仿真时刻，谁先谁后取决于仿真器内部事件队列调度顺序，用户无法控制：用`wait(e.triggered)`的线程会被正常唤醒，而用`@e`的线程可能错过这个边沿、继续阻塞。这也是为什么很多验证代码更推荐用`wait(event.triggered)`而不是裸`@event`来做跨线程同步。
+
+> `event`基础语法、`wait_order`在V0课程第3讲《进程间同步和通信》有讲，但`@`与`wait(.triggered)`这个竞态差异细节V0没有展开，笔记/Mehta补充。
+
+## 6. 信号量 semaphore
+
+```systemverilog
+semaphore key;
+key = new(1);        // 创建一个信号量，初始有1把"钥匙"（可用资源数为1）
+key.get(1);           // 阻塞式获取1把钥匙，不够就一直等
+key.put(1);           // 归还1把钥匙
+key.try_get(1);       // 非阻塞式尝试获取，成功返回1、失败返回0，不会卡住
+```
+
+用于验证环境里限制**同一时间只允许N个线程访问某资源**（比如共享总线），`get`/`put`是最常用的一对，`try_get`适合"能拿就拿，拿不到就跳过"的场景。
+
+> V0课程第3讲《进程间同步和通信》"旗语（semaphore）"一致覆盖。
+
+## 7. 邮箱 mailbox
+
+```systemverilog
+mailbox mbx = new();
+mbx.put(item); mbx.try_put(item);
+mbx.get(ref item); mbx.try_get(ref item);
+mbx.peek(ref item); mbx.try_peek(ref item);
+```
+
+mailbox 是线程之间传递数据的队列：`put`/`get` 是阻塞版本，`try_put`/`try_get` 是非阻塞版本，`peek` 只看队首、不取走。
+
+## 8. 路科V0课程对应关系
+
+| 本笔记内容 | V0课程对应位置 | 备注 |
+|---|---|---|
+| `[task/function] static`等任务/函数生命周期基础语法 | 第2讲《任务和函数》概述部分 | V0只讲基础语法 |
+| `automatic`/`static`并发竞态案例 | V0未讲 | 笔记/Mehta补充，本笔记唯一无V0出处的重点 |
+| `$display`/`$strobe`/`$monitor`对比 | V0未讲 | 笔记/Mehta补充 |
+| `event`基础语法（`->`/`@`/`wait(.triggered)`） | 第3讲《进程间同步和通信》"事件event" | 一致 |
+| `@`与`wait(.triggered)`竞态差异 | V0未明确展开 | 笔记/Mehta补充 |
+| `wait_order(e1,e2)` | 第3讲《进程间同步和通信》"wait_order()" | 一致 |
+| `semaphore`（`new/get/put/try_get`） | 第3讲《进程间同步和通信》"旗语（semaphore）" | 一致 |
+
+## 9. 自测要点
+
+1. `join_any` 用在只有一个子进程的 fork 块里，和 `join` 有什么区别？（提示：没区别，效果一样）
+2. 为什么 "Before wait fork" 几乎在 t=0 就打印，而不是等 `fork_main` 里的三个子 fork 都跑完？
+3. `wait fork` 和 `join_none` 的本质区别是什么？（提示：`join_none` 只管"这一层 fork 块要不要等"；`wait fork` 是"扫一遍我派生出的所有后代进程，等它们全部结束"）
+4. 如果把最内层的 `join_none`（`fork_3` 那个）改成 `join`，`fork_main` 自己会在什么时候"结束"？这会不会影响外层 `initial` 的行为？（提示：`fork_main` 本身是用 `join_none` 派生的，所以无论它内部怎么改，外层 initial 都不会等它）
+5. `@e` 和 `wait(e.triggered)` 在"触发与阻塞同时发生"这种边界情况下，行为有什么不同？
+6. `run_ID` 例子里，为什么 `automatic` 输出 `2, 1`，而 `static` 输出 `2, 2`？
+7. `$display`、`$strobe`、`$monitor` 分别在什么时候打印？连续调用两次 `$monitor` 会怎样？
+8. semaphore 的 `get` 和 `try_get` 有什么区别？各适合什么场景？
