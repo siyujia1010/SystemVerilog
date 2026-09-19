@@ -19,10 +19,18 @@
 | [02-assertions/03-req-ack-case-study.md](02-assertions/03-req-ack-case-study.md) | 综合案例：req/ack 握手协议断言（7 条规格、时序图、past_req 影子寄存器、local variable ID 匹配进阶版） |
 | [02-assertions/04-fork-and-process-control.md](02-assertions/04-fork-and-process-control.md) | fork / join / join_any / join_none / wait fork 进程控制，及 event/semaphore/mailbox 速记 |
 
+### 第三章：数据类型（string / enum / struct / 数组）
+
+| 文件 | 内容 |
+|---|---|
+| [03-data-types/01-string.md](03-data-types/01-string.md) | string 类型：拼接/重复、len/putc/getc/atoi/substr |
+| [03-data-types/02-enum.md](03-data-types/02-enum.md) | enum 枚举：整数互转、first/last/next/prev/num 遍历 |
+| [03-data-types/03-struct.md](03-data-types/03-struct.md) | struct 结构体：packed vs unpacked、赋值模式 `'{...}` 与 default |
+| [03-data-types/04-arrays.md](03-data-types/04-arrays.md) | packed / unpacked / dynamic / associative / queue 数组，及流操作符 `{>>{}}` / `{<<{}}` |
+
 ### 后续章节（占位，陆续补充）
 
-- 第三章：类的封装与继承
-- 第四章：数组（packed / unpacked / dynamic / associative / queue）
+- 第四章：类的封装与继承
 
 ## 学习进度
 
@@ -30,9 +38,9 @@
 - [x] 第二章：断言基础（14.9 并发断言基础、14.14 重叠 vs 非重叠蕴含、14.17 采样值函数）—— 已完成
 - [x] 第二章：req/ack 握手协议综合案例（7 条规格 + past_req 影子寄存器 + local variable ID 匹配）—— 已完成
 - [x] 第二章：fork/join 进程控制综合例题（join/join_any/join_none/wait fork）—— 已完成
+- [x] 第三章：数据类型（string / enum / struct / 数组）—— 已完成
 - [ ] 后续：功能覆盖率与断言的联合追踪（coverage-driven verification 收尾）
-- [ ] 第三章：类的封装与继承
-- [ ] 第四章：数组
+- [ ] 第四章：类的封装与继承
 
 ## 参考资料
 
