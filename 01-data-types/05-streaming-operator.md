@@ -9,6 +9,8 @@ array = {<<8{array}};   // 21
 
 配图示例（32位数据按字节/半字节做 byte swap / nibble swap）：
 
+![流操作符 nibble swap / byte swap 示意图（图源：硅芯思见）](assets/streaming-operator-nibble-byte-swap.png)
+
 ```
 result = 32'h12345678
 

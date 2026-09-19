@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 460" width="920" height="460" font-family="-apple-system, 'PingFang SC', 'Microsoft YaHei', 'Noto Sans CJK SC', 'Helvetica Neue', Arial, sans-serif">
+  <rect width="920" height="460" fill="#ffffff"/>
+
+  <!-- ============ 左：不加 solve ============ -->
+  <text x="30" y="34" font-size="18" font-weight="700" fill="#1f2933">不加 solve...before</text>
+  <text x="30" y="56" font-size="13" fill="#52606d">解空间当作整体，对 5 个合法解均匀采样</text>
+
+  <!-- 列标题 b -->
+  <g font-size="14" fill="#52606d" text-anchor="middle">
+    <text x="140" y="108">b=0</text><text x="224" y="108">b=1</text>
+    <text x="308" y="108">b=2</text><text x="392" y="108">b=3</text>
+  </g>
+  <!-- 行标题 a -->
+  <g font-size="14" fill="#52606d" text-anchor="end">
+    <text x="94" y="159">a=0</text>
+    <text x="94" y="235">a=1</text>
+  </g>
+
+  <!-- a=0 行 -->
+  <g stroke-width="1.5">
+    <rect x="100" y="118" width="80" height="72" rx="6" fill="#f0f1f3" stroke="#c4c9cf" stroke-dasharray="4 3"/>
+    <rect x="184" y="118" width="80" height="72" rx="6" fill="#cfe3fb" stroke="#3b82c4"/>
+    <rect x="268" y="118" width="80" height="72" rx="6" fill="#f0f1f3" stroke="#c4c9cf" stroke-dasharray="4 3"/>
+    <rect x="352" y="118" width="80" height="72" rx="6" fill="#f0f1f3" stroke="#c4c9cf" stroke-dasharray="4 3"/>
+  </g>
+  <g font-size="12" fill="#8a929b" text-anchor="middle">
+    <text x="140" y="158">✗ 违反约束</text>
+    <text x="308" y="158">✗ 违反约束</text>
+    <text x="392" y="158">✗ 违反约束</text>
+  </g>
+  <text x="224" y="162" font-size="22" font-weight="700" fill="#1f2933" text-anchor="middle">1/5</text>
+  <text x="224" y="180" font-size="12" fill="#52606d" text-anchor="middle">20%</text>
+
+  <!-- a=1 行 -->
+  <g stroke-width="1.5" fill="#cfe3fb" stroke="#3b82c4">
+    <rect x="100" y="194" width="80" height="72" rx="6"/>
+    <rect x="184" y="194" width="80" height="72" rx="6"/>
+    <rect x="268" y="194" width="80" height="72" rx="6"/>
+    <rect x="352" y="194" width="80" height="72" rx="6"/>
+  </g>
+  <g font-size="22" font-weight="700" fill="#1f2933" text-anchor="middle">
+    <text x="140" y="238">1/5</text><text x="224" y="238">1/5</text>
+    <text x="308" y="238">1/5</text><text x="392" y="238">1/5</text>
+  </g>
+  <g font-size="12" fill="#52606d" text-anchor="middle">
+    <text x="140" y="256">20%</text><text x="224" y="256">20%</text>
+    <text x="308" y="256">20%</text><text x="392" y="256">20%</text>
+  </g>
+
+  <text x="30" y="298" font-size="13" fill="#1f2933">8 种组合里 3 种违反 (a==0) -> (b==1)，剩 5 个解</text>
+  <text x="30" y="318" font-size="13" fill="#1f2933">每个解概率相同：<tspan font-weight="700">1/5</tspan></text>
+
+  <!-- 中间分隔线 -->
+  <line x1="460" y1="24" x2="460" y2="326" stroke="#d9dde2" stroke-width="1.5"/>
+
+  <!-- ============ 右：solve a before b ============ -->
+  <text x="490" y="34" font-size="18" font-weight="700" fill="#1f2933">加上 solve a before b</text>
+  <text x="490" y="56" font-size="13" fill="#52606d">分两步：先选 a，再在 a 已定的前提下选 b</text>
+
+  <g font-size="14" fill="#52606d" text-anchor="middle">
+    <text x="600" y="108">b=0</text><text x="684" y="108">b=1</text>
+    <text x="768" y="108">b=2</text><text x="852" y="108">b=3</text>
+  </g>
+  <g font-size="13" fill="#52606d" text-anchor="end">
+    <text x="554" y="152">a=0</text><text x="554" y="169" font-size="12">① P=1/2</text>
+    <text x="554" y="228">a=1</text><text x="554" y="245" font-size="12">① P=1/2</text>
+  </g>
+
+  <!-- a=0 行 -->
+  <g stroke-width="1.5">
+    <rect x="560" y="118" width="80" height="72" rx="6" fill="#f0f1f3" stroke="#c4c9cf" stroke-dasharray="4 3"/>
+    <rect x="644" y="118" width="80" height="72" rx="6" fill="#f6b45c" stroke="#b8690f" stroke-width="2.5"/>
+    <rect x="728" y="118" width="80" height="72" rx="6" fill="#f0f1f3" stroke="#c4c9cf" stroke-dasharray="4 3"/>
+    <rect x="812" y="118" width="80" height="72" rx="6" fill="#f0f1f3" stroke="#c4c9cf" stroke-dasharray="4 3"/>
+  </g>
+  <g font-size="12" fill="#8a929b" text-anchor="middle">
+    <text x="600" y="158">✗ 违反约束</text>
+    <text x="768" y="158">✗ 违反约束</text>
+    <text x="852" y="158">✗ 违反约束</text>
+  </g>
+  <text x="684" y="162" font-size="22" font-weight="700" fill="#1f2933" text-anchor="middle">1/2</text>
+  <text x="684" y="180" font-size="12" fill="#1f2933" text-anchor="middle">50%</text>
+
+  <!-- a=1 行 -->
+  <g stroke-width="1.5" fill="#dcebfa" stroke="#3b82c4">
+    <rect x="560" y="194" width="80" height="72" rx="6"/>
+    <rect x="644" y="194" width="80" height="72" rx="6"/>
+    <rect x="728" y="194" width="80" height="72" rx="6"/>
+    <rect x="812" y="194" width="80" height="72" rx="6"/>
+  </g>
+  <g font-size="22" font-weight="700" fill="#1f2933" text-anchor="middle">
+    <text x="600" y="238">1/8</text><text x="684" y="238">1/8</text>
+    <text x="768" y="238">1/8</text><text x="852" y="238">1/8</text>
+  </g>
+  <g font-size="12" fill="#52606d" text-anchor="middle">
+    <text x="600" y="256">12.5%</text><text x="684" y="256">12.5%</text>
+    <text x="768" y="256">12.5%</text><text x="852" y="256">12.5%</text>
+  </g>
+
+  <text x="490" y="298" font-size="13" fill="#1f2933">a=0：b 被约束死只能取 1（② P=1）→ 1/2 × 1 = <tspan font-weight="700">1/2</tspan></text>
+  <text x="490" y="318" font-size="13" fill="#1f2933">a=1：约束不生效，b 四选一（② P=1/4）→ 1/2 × 1/4 = <tspan font-weight="700">1/8</tspan></text>
+
+  <!-- ============ 底部：同一个解的概率对比 ============ -->
+  <line x1="30" y1="344" x2="890" y2="344" stroke="#d9dde2" stroke-width="1.5"/>
+  <text x="30" y="372" font-size="15" font-weight="700" fill="#1f2933">同一个解 (a=0, b=1) 的出现概率</text>
+
+  <text x="30" y="404" font-size="13" fill="#52606d">不加 solve</text>
+  <rect x="180" y="388" width="120" height="24" rx="4" fill="#3b82c4"/>
+  <text x="310" y="405" font-size="13" font-weight="700" fill="#1f2933">1/5 = 20%</text>
+
+  <text x="30" y="438" font-size="13" fill="#52606d">加 solve a before b</text>
+  <rect x="180" y="422" width="300" height="24" rx="4" fill="#f6b45c" stroke="#b8690f" stroke-width="1.5"/>
+  <text x="490" y="439" font-size="13" font-weight="700" fill="#1f2933">1/2 = 50%</text>
+
+  <text x="660" y="428" font-size="15" font-weight="700" fill="#b8690f">相差 2.5 倍</text>
+  <text x="660" y="447" font-size="12" fill="#52606d">solve...before 改变了概率分布</text>
+</svg>

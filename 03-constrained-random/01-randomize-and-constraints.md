@@ -109,6 +109,8 @@ constraint c { (a == 0) -> (b == 1); }
 
 **对比**：不加 `solve` 时 `(0,1)` 的概率是 `1/5`，加了 `solve a before b` 之后变成 `1/2`，差了2.5倍。
 
+![solve...before 概率分布对比：同一张 (a,b) 网格，左为整体均匀采样，右为先选 a 再选 b](assets/solve-before-probability.svg)
+
 **结论**：`solve...before` 不只是决定求解顺序、提高求解效率，它会**实实在在改变结果的概率分布**，使其不再是全局均匀。这是DV面试里考察"约束求解器不是黑箱"的高频题。
 
 > 补充：V0课程里没有讲到这个知识点，是笔记/Mehta书的独有内容。
@@ -133,5 +135,5 @@ constraint c { (a == 0) -> (b == 1); }
 
 ## 9. 相关笔记
 
-- **依托的语言基础**：`rand` / `randc` 成员和约束块都定义在 class 里（对应后续"类的封装与继承"一章）；§6 的数组归约约束用到 [数组](../03-data-types/04-arrays.md) 的内置方法。
-- **下游**：随机约束负责"产生激励"，[功能覆盖率](../01-functional-coverage/README.md) 负责衡量"随机有没有覆盖到该覆盖的场景"，两者合起来就是 coverage-driven verification。
+- **依托的语言基础**：`rand` / `randc` 成员和约束块都定义在 class 里（对应后续"类的封装与继承"一章）；§6 的数组归约约束用到 [数组](../01-data-types/04-arrays.md) 的内置方法。
+- **下游**：随机约束负责"产生激励"，[功能覆盖率](../04-functional-coverage/README.md) 负责衡量"随机有没有覆盖到该覆盖的场景"，两者合起来就是 coverage-driven verification。
