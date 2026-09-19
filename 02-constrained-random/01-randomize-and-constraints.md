@@ -140,5 +140,5 @@ constraint c { (a == 0) -> (b == 1); }
 
 ## 9. 相关笔记
 
-- **依托的语言基础**：`rand` / `randc` 成员和约束块都定义在 class 里（对应后续"类的封装与继承"一章）；§6 的数组归约约束用到 [数组](../01-data-types/04-arrays.md) 的内置方法。
+- **依托的语言基础**：`rand` / `randc` 成员和约束块都定义在 class 里（对应后续"类的封装与继承"一章）；§6 的数组归约约束用到 [数组](../01-data-types/02-arrays.md) 的内置方法。
 - **下游**：随机约束负责"产生激励"，[功能覆盖率](../04-functional-coverage/README.md) 负责衡量"随机有没有覆盖到该覆盖的场景"，两者合起来就是 coverage-driven verification。
