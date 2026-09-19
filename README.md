@@ -58,7 +58,6 @@
 
 ## 参考资料
 
-- *Introduction to SystemVerilog*, Ashok B. Mehta —— 第 14 章 SystemVerilog Assertions，第 15 章 Functional Coverage
-- *Cracking Digital VLSI Verification Interview*, Ramdas Mozhikunnath & Robin Garg —— 覆盖率与断言相关面试题
-- 路科验证 V0 课程 —— 第 2 讲《任务和函数》、第 3 讲《随机约束》《进程间同步和通信》（第二、三章笔记末尾附有与课程的对应关系表）
+- *Introduction to SystemVerilog*, Ashok B. Mehta —— 第 2/3 章 数据类型与数组，第 12.13 节 流操作符，第 13 章 Constrained Random，第 14 章 SystemVerilog Assertions，第 15 章 Functional Coverage，第 16 章 SystemVerilog Processes，第 18 章 Semaphores and Mailboxes（第二、三章笔记末尾附有与本书小节号的对应关系表）
+- *Cracking Digital VLSI Verification Interview*, Ramdas Mozhikunnath & Robin Garg —— 覆盖率、断言与随机约束相关面试题（`solve...before` 第 238 题、`std::randomize` 第 261 题）
 - 个人手写笔记 (dv笔记)

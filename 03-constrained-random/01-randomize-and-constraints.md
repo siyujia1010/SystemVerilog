@@ -88,7 +88,7 @@ array.xor with (int'(item)) == 50;
 
 `item` 是 `with()` 子句里系统隐式提供的迭代变量，代表遍历过程中的当前数组元素（这里先做 `int'` 类型转换再求和），不需要用户自己声明，类似 `foreach(array[i])` 的隐式循环变量。整体约束的意思是：数组所有元素（转换为int后）求和必须等于50。
 
-（V0课程里对应的基础写法是 `A.sum() < 1000`，不带 `with()` 的条件表达式；`with(int'(item))` 这种更灵活的写法是笔记/Mehta书补充的进阶内容。）
+（Mehta 13.6.6 里的例子就是这种写法：`Darray.sum() with (int'(item)) == 30`；普通数组（非约束场景）的归约方法见 3.5.3 Array Reduction Methods。）
 
 ## 7. `solve...before` 与概率分布偏置 —— 经典面试坑点
 
@@ -113,25 +113,26 @@ constraint c { (a == 0) -> (b == 1); }
 
 **结论**：`solve...before` 不只是决定求解顺序、提高求解效率，它会**实实在在改变结果的概率分布**，使其不再是全局均匀。这是DV面试里考察"约束求解器不是黑箱"的高频题。
 
-> 补充：V0课程里没有讲到这个知识点，是笔记/Mehta书的独有内容。
+> 来源说明：Mehta 书中没有讲 `solve...before`。同类题见《Cracking Digital VLSI Verification Interview》第 238 题（该书例子是 `A==0 -> B==0`，本笔记用的是 `b==1` 的变体，结论方向相同）。
 
-## 8. 路科V0课程对应关系
+## 8. 与 Mehta《Introduction to SystemVerilog》的对应关系
 
-| 本笔记内容 | V0课程对应位置 | 备注 |
+本章对应书中第 13 章 *Constrained Random Test Generation and Verification*。
+
+| 本笔记内容 | Mehta 对应位置 | 备注 |
 |---|---|---|
-| `$random`/`$urandom`/`$urandom_range` | 第3讲《随机约束》"如何简单地产生一个随机数？" | 一致 |
-| `randomize() with{}` 内联约束 | 第3讲《随机约束》"内嵌约束" | 一致 |
-| inline约束名字解析 | 第3讲《随机约束》"内嵌约束（指向模糊）" | 一致 |
-| `local::` 域指向 | 第3讲《随机约束》"local域指向" | 一致，例子不同规则相同 |
-| `rand_mode` | 第3讲《随机约束》"随机控制" | 一致 |
-| `constraint_mode` | 第3讲《随机约束》"约束控制" | 一致 |
-| `randomize(x)`带参数 | 第3讲《随机约束》"内嵌变量控制" | 一致 |
-| `pre_randomize()`/`post_randomize()` | V0未讲 | 笔记/Mehta补充 |
-| extern约束`constraint bus::cstr2{}` | V0未讲 | 笔记/Mehta补充 |
-| `dist` 权重分布 | 第3讲《随机约束》"约束块（权重分布）" | 一致 |
-| 数组归约约束 `.sum()` | 第3讲《随机约束》"约束块（迭代约束）" | V0只讲基础`.sum()`，不含`with(int'(item))`进阶写法 |
-| `solve...before`概率偏置 | V0未讲 | 笔记/Mehta补充，V0全文搜索无此内容 |
-| soft约束 | 第3讲《随机约束》"约束块（软约束）" | 一致 |
+| `$random`/`$urandom`/`$urandom_range` | 13.11 Random Number Generation System Functions（13.11.1 RNG、13.11.3 `srandom`/`get_randstate`/`set_randstate`） | 书中示例用 `$urandom & 'h0000_00ff` 屏蔽高位、`{$urandom, $urandom}` 拼 64 位，与 §1 的写法一致 |
+| `randomize() with{}` 内联约束 | 13.10 randomize() with Arguments: In-Line Random | |
+| inline 约束名字解析、`local::` | 13.7.2 Local Scope Resolution (local::) | |
+| `rand_mode` | 13.8 rand_mode(): Disabling Random Variables | |
+| `constraint_mode` | 13.9 constraint_mode(): Control Constraints | 另见 13.4.1 Constraints: Turning On and OFF |
+| `pre_randomize()`/`post_randomize()` | 13.7.1 Pre-randomization and Post-randomization | |
+| extern 约束 `constraint bus::cstr2{}` | 13.6.1 External Constraint Blocks | 类作用域运算符 `::` 与 `extern` 的通用讲解见 8.15 |
+| `dist` 权重分布（`:=` vs `:/`） | 13.6.2 Weighted Distribution | |
+| 数组归约约束 `sum() with (int'(item))` | 13.6.6 Array Reduction Methods for Constraint | 普通数组的归约方法见 3.5.3 |
+| soft 约束 | 13.6.8 Soft Constraints | 书中还讲了 `disable soft` |
+| `solve...before` 概率偏置 | **书中未涉及** | 《Cracking Digital VLSI Verification Interview》第 238 题 |
+| `std::randomize(a) with {}` | **书中未涉及**（13.10 只讲对象的 `randomize() with`） | 《Cracking Digital VLSI Verification Interview》第 261 题 |
 
 ## 9. 相关笔记
 

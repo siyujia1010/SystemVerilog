@@ -111,7 +111,7 @@ endtask
 
 **如果是 `static`**（默认情况，且被并发重入调用时）：`ID`、`t` 是全局唯一的一份存储，被所有调用共享。分支A在时刻10把共享的`ID`设为1，进入50时长的等待（`#t`延迟量在语句执行的那一刻求值一次并锁定，不会再变）；但在它还没醒来之前，时刻20分支B把同一个共享的`ID`覆盖成了2。等到时刻60分支A的延迟结束、真正执行`$display("%d", ID)`时，读到的`ID`已经是被分支B改写过的**2**，不是它自己原本的1。所以两次打印都是**2, 2**——这是共享静态局部变量在并发场景下"互相踩踏"的经典bug，也是为什么验证代码里几乎所有task都要显式加`automatic`。
 
-> V0课程未讲这个具体例子，笔记/Mehta补充内容。
+> Mehta：22.1.1 Static and Automatic Tasks（讲的是同一原理：static task 被同时调用时，变量会互相覆盖）。
 
 ## 4. 打印类系统任务
 
@@ -126,7 +126,7 @@ $monitor: 假如任何值发生更改，则在当前时间步的末尾打印值
 - `$strobe`：打印当前时间步（time step）**结束时**的值——保证拿到这个时间步里最终稳定的值，而不是中间态。
 - `$monitor`：只要监控的信号发生任何变化，就在当前时间步末尾自动打印一次。**全局只能生效一个**，后调用的会覆盖前一个（不是叠加）。
 
-> V0课程未系统讲解这三者对比，笔记/Mehta补充内容。
+> Mehta：25.1 Display Tasks。
 
 ## 5. 事件阻塞：`@` vs `wait(event.triggered)`
 
@@ -145,7 +145,7 @@ wait_order(e1, e2); // 要求必须先等到e1触发，再等到e2触发，顺�
 
 如果`->e`和某个线程执行到`@e`/`wait(e.triggered)`恰好被调度在同一个仿真时刻，谁先谁后取决于仿真器内部事件队列调度顺序，用户无法控制：用`wait(e.triggered)`的线程会被正常唤醒，而用`@e`的线程可能错过这个边沿、继续阻塞。这也是为什么很多验证代码更推荐用`wait(event.triggered)`而不是裸`@event`来做跨线程同步。
 
-> `event`基础语法、`wait_order`在V0课程第3讲《进程间同步和通信》有讲，但`@`与`wait(.triggered)`这个竞态差异细节V0没有展开，笔记/Mehta补充。
+> Mehta：2.12 Event Data Type（书中写明"`wait` 无论在触发之前还是同一仿真时刻执行，都会被这次触发唤醒"）、2.12.1 Event Sequencing: wait_order()、16.5 Named Event Time Control。
 
 ## 6. 信号量 semaphore
 
@@ -159,7 +159,7 @@ key.try_get(1);       // 非阻塞式尝试获取，成功返回1、失败返回
 
 用于验证环境里限制**同一时间只允许N个线程访问某资源**（比如共享总线），`get`/`put`是最常用的一对，`try_get`适合"能拿就拿，拿不到就跳过"的场景。
 
-> V0课程第3讲《进程间同步和通信》"旗语（semaphore）"一致覆盖。
+> Mehta：18.1 Semaphores。
 
 ## 7. 邮箱 mailbox
 
@@ -172,17 +172,21 @@ mbx.peek(ref item); mbx.try_peek(ref item);
 
 mailbox 是线程之间传递数据的队列：`put`/`get` 是阻塞版本，`try_put`/`try_get` 是非阻塞版本，`peek` 只看队首、不取走。
 
-## 8. 路科V0课程对应关系
+## 8. 与 Mehta《Introduction to SystemVerilog》的对应关系
 
-| 本笔记内容 | V0课程对应位置 | 备注 |
+本章分散在书中第 16 章 *SystemVerilog Processes*、第 18 章 *Inter-process Synchronization. Semaphores and Mailboxes*，以及第 2、22、25 章的相关小节。
+
+| 本笔记内容 | Mehta 对应位置 | 备注 |
 |---|---|---|
-| `[task/function] static`等任务/函数生命周期基础语法 | 第2讲《任务和函数》概述部分 | V0只讲基础语法 |
-| `automatic`/`static`并发竞态案例 | V0未讲 | 笔记/Mehta补充，本笔记唯一无V0出处的重点 |
-| `$display`/`$strobe`/`$monitor`对比 | V0未讲 | 笔记/Mehta补充 |
-| `event`基础语法（`->`/`@`/`wait(.triggered)`） | 第3讲《进程间同步和通信》"事件event" | 一致 |
-| `@`与`wait(.triggered)`竞态差异 | V0未明确展开 | 笔记/Mehta补充 |
-| `wait_order(e1,e2)` | 第3讲《进程间同步和通信》"wait_order()" | 一致 |
-| `semaphore`（`new/get/put/try_get`） | 第3讲《进程间同步和通信》"旗语（semaphore）" | 一致 |
+| `fork ... join / join_any / join_none`（§1–2） | 16.3 Parallel Blocks: fork-join（16.3.1 fork-join、16.3.2 fork-join_any、16.3.3 fork-join_none） | |
+| `wait fork` 只等直接子进程（§1–2） | 16.4.1 Wait Fork | 书中示例注释写明 `wait fork` "will not wait for descendant1 and descendant2"，正文说等的是 immediate concurrent processes，与 §2 的 VCS 实测一致 |
+| `disable fork` | 16.7 Disable Statement | 书中只讲 `disable` 命名块/任务，**没有单独讲 `disable fork`** |
+| `automatic` vs `static` 并发竞态（§3） | 22.1.1 Static and Automatic Tasks；2.8 Static, Automatic, and Local Variables（2.8.3 Variable Lifetimes）；22.2.4 Static and Automatic Functions | 22.1.1 讲 static task 被同时调用时变量互相覆盖，与 §3 原理一致 |
+| `$display` / `$strobe` / `$monitor`（§4） | 25.1 Display Tasks；23.1 Procedural Assignments | 25.1 把 `$monitor` 描述为 continuous monitoring（变量变化时在时间步末尾打印）；23.1 建议用 `$strobe` 打印非阻塞赋值的结果。"`$monitor` 全局只能生效一个"书中未明确写 |
+| event 基础、`@` vs `wait(e.triggered)`（§5） | 2.12 Event Data Type；16.5 Named Event Time Control | 2.12 写明 `wait(e.triggered)` 无论在触发之前还是同一时刻执行都会被唤醒 |
+| `wait_order(e1, e2)`（§5） | 2.12.1 Event Sequencing: wait_order() | |
+| semaphore（`new/get/put/try_get`）（§6） | 18.1 Semaphores | |
+| mailbox（`put/get/peek` 及 `try_` 版本）（§7） | 18.2 Mailboxes（18.2.1 Parameterized Mailbox） | |
 
 ## 9. 自测要点
 
