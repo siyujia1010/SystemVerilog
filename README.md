@@ -18,11 +18,12 @@
 
 ### 第二章：进程与同步（task 生命周期 / 事件 / 信号量）
 
-> 与第五章 [fork / join 与进程控制](05-assertions/04-fork-and-process-control.md) 是外层/内层关系：fork/join 管"线程怎么启动和收拢"，本章管"线程之间共享什么、怎么同步"。
+> 本章内部是外层/内层关系：01 fork/join 管"线程怎么启动和收拢"（外层），02 管"线程之间共享什么、怎么同步"（内层）。
 
 | 文件 | 内容 |
 |---|---|
-| [02-process-sync/01-tasks-process-sync.md](02-process-sync/01-tasks-process-sync.md) | `automatic` vs `static` 并发竞态、`$display/$strobe/$monitor`、`@` vs `wait(.triggered)` 竞态、semaphore |
+| [02-process-sync/01-fork-and-process-control.md](02-process-sync/01-fork-and-process-control.md) | fork / join / join_any / join_none / wait fork 进程控制，及 event/semaphore/mailbox 速记 |
+| [02-process-sync/02-tasks-process-sync.md](02-process-sync/02-tasks-process-sync.md) | `automatic` vs `static` 并发竞态、`$display/$strobe/$monitor`、`@` vs `wait(.triggered)` 竞态、semaphore |
 
 ### 第三章：随机约束（Constrained Random）
 
@@ -41,7 +42,6 @@
 | [05-assertions/01-basics.md](05-assertions/01-basics.md) | 断言基础：immediate vs concurrent、property/sequence、`\|->` vs `\|=>`、采样值函数 `$rose/$fell/$stable/$past` |
 | [05-assertions/02-operators-cheatsheet.md](05-assertions/02-operators-cheatsheet.md) | SVA 操作符速查表（and/or/intersect/not/throughout/within/first_match/重复操作符等） |
 | [05-assertions/03-req-ack-case-study.md](05-assertions/03-req-ack-case-study.md) | 综合案例：req/ack 握手协议断言（7 条规格、时序图、past_req 影子寄存器、local variable ID 匹配进阶版） |
-| [05-assertions/04-fork-and-process-control.md](05-assertions/04-fork-and-process-control.md) | fork / join / join_any / join_none / wait fork 进程控制，及 event/semaphore/mailbox 速记 |
 
 ### 后续章节（占位，陆续补充）
 
@@ -51,12 +51,12 @@
 
 - [x] 第一章：数据类型（string / enum / struct / 数组）—— 已完成
 - [x] 第一章：流操作符深入（nibble swap / byte swap）—— 已完成
+- [x] 第二章：fork/join 进程控制综合例题（join/join_any/join_none/wait fork）—— 已完成
 - [x] 第二章：进程与同步（automatic/static 竞态、@ vs wait、semaphore）—— 已完成
 - [x] 第三章：随机约束（inline 约束名字解析、soft、dist、solve...before）—— 已完成
 - [x] 第四章：功能覆盖率（covergroup/coverpoint/bins 数组 vs 单 bin/cross）—— 已完成，自测题全部答对
 - [x] 第五章：断言基础（14.9 并发断言基础、14.14 重叠 vs 非重叠蕴含、14.17 采样值函数）—— 已完成
 - [x] 第五章：req/ack 握手协议综合案例（7 条规格 + past_req 影子寄存器 + local variable ID 匹配）—— 已完成
-- [x] 第五章：fork/join 进程控制综合例题（join/join_any/join_none/wait fork）—— 已完成
 - [ ] 后续：功能覆盖率与断言的联合追踪（coverage-driven verification 收尾）
 - [ ] 第六章：类的封装与继承
 

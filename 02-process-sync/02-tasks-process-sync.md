@@ -90,5 +90,5 @@ key.try_get(1);       // 非阻塞式尝试获取，成功返回1、失败返回
 
 ## 6. 相关笔记
 
-- **外层**：[fork / join 与进程控制](../05-assertions/04-fork-and-process-control.md) —— 讲怎么**启动和收拢**线程（`join` / `join_any` / `join_none` / `wait fork`），并在 §3 给了 event/semaphore 的速记。
+- **外层**：[fork / join 与进程控制](01-fork-and-process-control.md) —— 讲怎么**启动和收拢**线程（`join` / `join_any` / `join_none` / `wait fork`），并在 §3 给了 event/semaphore 的速记。
 - **本文（内层）**：线程启动之后会遇到的问题 —— task 存储是否共享（`automatic` / `static`）、事件竞态（`@` vs `wait(.triggered)`，对速记里的结论做了展开）、信号量互斥。

@@ -90,6 +90,8 @@ mbx.peek(ref item); mbx.try_peek(ref item);
 
 `@` 和 `wait(event.triggered)` 的区别是一个容易考到的点：如果触发线程和阻塞线程恰好在同一时刻发生，用 `wait(e.triggered)` 的线程会被正常唤醒，而用 `@e` 的线程反而不会被唤醒（还停留在阻塞状态）——因为 `@` 监听的是事件触发的那个"边沿"，如果线程是在触发的同一时刻才开始等待，就错过了这个边沿。
 
+> 更详细的竞态分析、semaphore 用法见同章的 [02-tasks-process-sync.md](02-tasks-process-sync.md)。
+
 ## 4. 自测要点
 
 1. `join_any` 用在只有一个子进程的 fork 块里，和 `join` 有什么区别？（提示：没区别，效果一样）
