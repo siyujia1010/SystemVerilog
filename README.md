@@ -11,20 +11,20 @@
 
 | 文件 | 内容 |
 |---|---|
-| [01-data-types/01-string-enum-struct.md](01-data-types/01-string-enum-struct.md) | string（拼接/重复、len/putc/getc/atoi/substr）；enum（整数互转、first/last/next/prev/num 遍历）；struct（packed vs unpacked、赋值模式 `'{...}` 与 default） |
+| [01-data-types/01.string_enum_struct.md](01-data-types/01.string_enum_struct.md) | string（拼接/重复、len/putc/getc/atoi/substr）；enum（整数互转、first/last/next/prev/num 遍历）；struct（packed vs unpacked、赋值模式 `'{...}` 与 default） |
 | [01-data-types/02.arrays_streaming.md](01-data-types/02.arrays_streaming.md) | packed / unpacked / dynamic / associative / queue 数组；流操作符 `{>>{}}` / `{<<{}}`（数组打包/解包基础，及 32 位 nibble swap / byte swap 深入，含配图） |
 
 ### 第二章：随机约束（Constrained Random）
 
 | 文件 | 内容 |
 |---|---|
-| [02-constrained-random/01-randomize-and-constraints.md](02-constrained-random/01-randomize-and-constraints.md) | `$urandom_range`、`randomize() with` 与 `local::`（含变量归属图）、`rand_mode` / `constraint_mode`、soft、`dist`（`:=` vs `:/`）、数组归约约束、`solve...before` 概率偏置（含概率分布图） |
+| [02-constrained-random/01.randomize_and_constraints.md](02-constrained-random/01.randomize_and_constraints.md) | `$urandom_range`、`randomize() with` 与 `local::`（含变量归属图）、`rand_mode` / `constraint_mode`、soft、`dist`（`:=` vs `:/`）、数组归约约束、`solve...before` 概率偏置（含概率分布图） |
 
 ### 第三章：进程控制与同步（fork/join / task 生命周期 / 事件 / 信号量）
 
 | 文件 | 内容 |
 |---|---|
-| [03-process-sync/01-process-control-and-sync.md](03-process-sync/01-process-control-and-sync.md) | fork / join / join_any / join_none / wait fork 及综合例题；`automatic` vs `static` 并发竞态（含示意图）；`$display/$strobe/$monitor`（含时间步示意图）；`@` vs `wait(.triggered)` 竞态；semaphore；mailbox |
+| [03-process-sync/01.process_control_and_sync.md](03-process-sync/01.process_control_and_sync.md) | fork / join / join_any / join_none / wait fork 及综合例题；`automatic` vs `static` 并发竞态（含示意图）；`$display/$strobe/$monitor`（含时间步示意图）；`@` vs `wait(.triggered)` 竞态；semaphore；mailbox |
 
 ### 第四章：功能覆盖率（Functional Coverage）
 
@@ -34,9 +34,9 @@
 
 | 文件 | 内容 |
 |---|---|
-| [05-assertions/01-basics.md](05-assertions/01-basics.md) | 断言基础：immediate vs concurrent、property/sequence、`\|->` vs `\|=>`、采样值函数 `$rose/$fell/$stable/$past` |
-| [05-assertions/02-operators-cheatsheet.md](05-assertions/02-operators-cheatsheet.md) | SVA 操作符速查表（and/or/intersect/not/throughout/within/first_match/重复操作符等） |
-| [05-assertions/03-req-ack-case-study.md](05-assertions/03-req-ack-case-study.md) | 综合案例：req/ack 握手协议断言（7 条规格、时序图、past_req 影子寄存器、local variable ID 匹配进阶版） |
+| [05-assertions/01.basics.md](05-assertions/01.basics.md) | 断言基础：immediate vs concurrent、property/sequence、`\|->` vs `\|=>`、采样值函数 `$rose/$fell/$stable/$past` |
+| [05-assertions/02.operators_cheatsheet.md](05-assertions/02.operators_cheatsheet.md) | SVA 操作符速查表（and/or/intersect/not/throughout/within/first_match/重复操作符等） |
+| [05-assertions/03.req_ack_case_study.md](05-assertions/03.req_ack_case_study.md) | 综合案例：req/ack 握手协议断言（7 条规格、时序图、past_req 影子寄存器、local variable ID 匹配进阶版） |
 
 ### 后续章节（占位，陆续补充）
 
