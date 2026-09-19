@@ -11,11 +11,9 @@
 
 | 文件 | 内容 |
 |---|---|
-| [01-data-types/01-string.md](01-data-types/01-string.md) | string 类型：拼接/重复、len/putc/getc/atoi/substr |
-| [01-data-types/02-enum.md](01-data-types/02-enum.md) | enum 枚举：整数互转、first/last/next/prev/num 遍历 |
-| [01-data-types/03-struct.md](01-data-types/03-struct.md) | struct 结构体：packed vs unpacked、赋值模式 `'{...}` 与 default |
-| [01-data-types/04-arrays.md](01-data-types/04-arrays.md) | packed / unpacked / dynamic / associative / queue 数组，及流操作符 `{>>{}}` / `{<<{}}` |
-| [01-data-types/05-streaming-operator.md](01-data-types/05-streaming-operator.md) | 流操作符深入：`{<<n{...}}` 切片粒度、nibble swap / byte swap（含配图，04-arrays §5 的深入版） |
+| [01-data-types/01-string-enum-struct.md](01-data-types/01-string-enum-struct.md) | string（拼接/重复、len/putc/getc/atoi/substr）；enum（整数互转、first/last/next/prev/num 遍历）；struct（packed vs unpacked、赋值模式 `'{...}` 与 default） |
+| [01-data-types/02-arrays.md](01-data-types/02-arrays.md) | packed / unpacked / dynamic / associative / queue 数组，及流操作符 `{>>{}}` / `{<<{}}` |
+| [01-data-types/03-streaming-operator.md](01-data-types/03-streaming-operator.md) | 流操作符深入：`{<<n{...}}` 切片粒度、nibble swap / byte swap（含配图，02-arrays §5 的深入版） |
 
 ### 第二章：随机约束（Constrained Random）
 

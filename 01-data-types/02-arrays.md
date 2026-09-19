@@ -204,4 +204,4 @@ bit [15:0] array2 = {<<8{array}};  // <<8 表示以 8 位为一个"切片"做反
 
 这在处理协议报文的打包/解包（比如把多个字段拼成一个总线宽度的信号，或者反过来从总线信号里取出各个字段）时非常常用。
 
-> Mehta：12.13 Streaming Operators (pack/unpack)（12.13.1 Packing of Bits、12.13.2 Unpacking of Bits）；深入版见 [05-streaming-operator.md](05-streaming-operator.md)。
+> Mehta：12.13 Streaming Operators (pack/unpack)（12.13.1 Packing of Bits、12.13.2 Unpacking of Bits）；深入版见 [03-streaming-operator.md](03-streaming-operator.md)。

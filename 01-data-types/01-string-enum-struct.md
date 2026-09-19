@@ -1,0 +1,151 @@
+# string / enum / struct
+
+## 1. string 类型
+
+### 原始笔记
+
+```systemverilog
+string ans = "" = {"a", "b"} = {2{"a"}}
+str.len()/putc(3, "d")/getc(3)/atoi()/substr(i, j)
+```
+
+### 讲解
+
+`string` 是 SystemVerilog 里的内置动态类型，专门用来存变长字符串（不用像 Verilog 那样拿 `reg [8*N-1:0]` 硬凑）。上面这行笔记其实是把几种不同的初始化/赋值方式压缩写在一起了，拆开看：
+
+```systemverilog
+string ans;
+ans = "";           // 空字符串
+ans = {"a", "b"};    // 拼接：结果是 "ab"
+ans = {2{"a"}};      // 复制/重复拼接：结果是 "aa"
+```
+
+`string` 类型支持用 `{}` 做**拼接（concatenation）**和**重复（replication）**，这一点和普通的位矢量拼接语法是一致的，只是操作数换成了字符串：
+
+- `{s1, s2}`：把 s1、s2 首尾相连
+- `{n{s}}`：把 s 重复 n 遍
+
+#### 常用内置方法
+
+| 方法 | 作用 |
+|---|---|
+| `str.len()` | 返回字符串长度 |
+| `str.putc(i, c)` | 把第 `i` 个字符替换成 `c` |
+| `str.getc(i)` | 取第 `i` 个字符（返回的是 byte，即该字符的 ASCII 码） |
+| `str.atoi()` | 把字符串转成整数（笔记原文写的是 `atio()`，是 `atoi()` 的笔误；同系列还有 `atohex()`/`atooct()`/`atobin()`/`atoreal()`，以及反过来的 `itoa()`） |
+| `str.substr(i, j)` | 取子串，从下标 `i` 到 `j`（闭区间） |
+
+例：
+```systemverilog
+string s = "hello";
+$display(s.len());        // 5
+s.putc(0, "H");            // s 变成 "Hello"
+byte c = s.getc(1);        // c = "e" 的 ASCII 码
+int  n = "123".atoi();     // n = 123
+string sub = s.substr(1,3); // "ell"
+```
+
+> Mehta：2.11 String Data Type（2.11.1 String Operators、2.11.2 String Methods）。
+
+## 2. enum 枚举类型
+
+### 原始笔记
+
+```systemverilog
+typedef enum{red,blue} light;
+int c = red + 1; light l = light'(c)
+l.first()/last()/next()/prev/num()
+light l = l.first();
+do begin
+  l = l.next();
+end
+while(l != l.first())
+```
+
+### 讲解
+
+#### 声明与整数互转
+
+```systemverilog
+typedef enum {red, blue} light;   // 默认 red=0, blue=1（可以显式指定数值）
+```
+
+枚举变量本质上还是整数（默认 `int`），所以可以直接参与整数运算，但运算结果的类型是整数，不会自动变回枚举类型，要转回来必须显式做**类型转换（cast）**：
+
+```systemverilog
+int   c = red + 1;      // c 是普通 int，值为 1
+light l = light'(c);    // 用 light'(...) 把整数 1 转型回枚举类型 light，也就是 blue
+```
+
+如果不加 `light'(...)` 这个转型，直接写 `light l = c;` 是不合法的（整数不能隐式赋给枚举类型）。
+
+> Mehta：2.9 Enumerated Types；enum 与整数互转另见 2.13 Static Casting、2.14 Dynamic Casting（`$cast`）。
+
+#### 内置方法：遍历所有取值
+
+| 方法 | 作用 |
+|---|---|
+| `.first()` | 返回枚举类型的第一个值 |
+| `.last()` | 返回最后一个值 |
+| `.next()` | 返回当前值的下一个；如果当前已经是最后一个，`.next()` 会**绕回到第一个** |
+| `.prev()` | 返回当前值的上一个；同理，第一个值的 `.prev()` 会绕回到最后一个 |
+| `.num()` | 返回这个枚举类型总共有多少个取值 |
+
+正因为 `.next()`/`.prev()` 会自动绕回，才能写出下面这种"遍历一整圈"的写法：
+
+```systemverilog
+light l = l.first();
+do begin
+  l = l.next();
+end while (l != l.first());
+```
+
+这是一个 `do...while` 循环：先从第一个值开始，每次取下一个值，直到 `.next()` 转了一整圈、又绕回到 `first()` 为止。用 `do...while` 而不是普通 `while`，是因为要保证循环体至少执行一次（哪怕枚举类型只有一个值）。
+
+> Mehta：2.9.1 Enumerated-Type Methods（`first/last/next/prev/num`）。
+
+## 3. struct 结构体
+
+### 原始笔记
+
+```systemverilog
+//default : unsigned & unpacked
+//unpacked signed structure is illegal, defalut format is unpacked
+//packed structure cannot have rand variables
+typedef struct packed signed{
+  int coins;
+  real dollars;
+  byte data[4];
+} money;
+
+//default 中的内容可以被后面的覆盖
+money array = '{coins:100，default: 0, data:0};
+```
+
+### 讲解
+
+#### packed vs unpacked
+
+- **默认情况**：结构体不加 `packed` 关键字时是 **unpacked**（成员各自占自己的存储空间，不保证连续排布），且默认是 **unsigned**。
+- **`unpacked` + `signed` 不合法**：`signed`/`unsigned` 这个属性只对 **packed** 结构体有意义（因为只有 packed 结构体才被当成一个整体的位矢量来看待，才谈得上"整体是有符号还是无符号"）；对 unpacked 结构体写 `signed` 是不合法的。
+- **packed 结构体不能有 `rand` 成员**：`packed struct` 的每个成员必须是可以"打包"进连续位域的类型（整型、其它 packed 类型等），`rand` 声明的随机化属性和 packed 的位域打包机制是冲突的，所以 packed 结构体里不能直接放 `rand` 变量。
+
+> ⚠️ 笔记里这个 `money` 例子本身有一处需要留意：`packed` 结构体要求所有成员都是可打包的（整型/packed 类型），而 `real dollars;` 是浮点类型，并不满足这个条件。这行大概率是手写笔记速记时的简化/笔误，实际写 packed 结构体时不能塞 `real` 成员。复习到这里时建议对照原始资料再确认一遍这个例子的准确写法，这里先如实保留原文，避免我自己瞎改动了原始记录。
+
+> Mehta：5.1 Packed Structure、5.2 Unpacked Structure。
+
+#### 结构体字面量赋值：`'{...}` 与 `default`
+
+```systemverilog
+money array = '{coins:100, default: 0, data:0};
+```
+
+`'{...}` 是**赋值模式（assignment pattern）**语法，可以按成员名指定初始值：
+
+- `coins: 100`：把 `coins` 成员设成 100
+- `default: 0`：**没有被显式点名的成员**，一律用 0 填充
+- `data: 0`：显式把 `data` 也设成 0（相当于覆盖了 `default` 对 `data` 本来也会生效的填充值，只是这里写的值恰好一样）
+
+关键规则：**写在后面的具体成员赋值，会覆盖 `default` 对该成员的默认填充**——`default` 更像是"兜底"，具体点名的成员优先级更高。这也是为什么原始笔记特意加了一句注释"default 中的内容可以被后面的覆盖"。
+
+> Mehta：5.1 Packed Structure（讲了 `'{...}` 赋值与 `default:`）、5.2 Unpacked Structure。
