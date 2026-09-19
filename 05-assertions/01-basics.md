@@ -9,6 +9,8 @@
 | 位置 | 只能出现在**过程块**内（initial/always/task/function 等） | 可以出现在 module/interface/program/checker/generate block（**不能在 class 里**，但 property/sequence 本身能在 class 外的这些地方声明） |
 | 典型问题 | `module test(...); assert_1: assert(a && b); endmodule` —— 这是**错的**，immediate assertion 不能直接写在 module 顶层，必须放在过程块里 | 天然支持"多线程"求值（见下） |
 
+> Mehta：14.8 Immediate Assertions；14.9 Concurrent Assertions: Basics。
+
 ## 2. property 与 sequence 的区别
 
 - **sequence**：只是描述信号之间的"时序/组合关系"，本身不含"如果...那么..."的蕴含逻辑，**不能用 `|->` / `|=>`**。可以有形参，可以被实例化、引用。可以声明在 module/interface/program/clocking block/package/checker/generate block（不能在 class 里）。
@@ -25,6 +27,8 @@ endproperty
 
 assert property (name);
 ```
+
+> Mehta：14.16 Difference Between "sequence" and "property"。
 
 ## 3. `|->` vs `|=>`：重叠 vs 非重叠蕴含
 
@@ -57,6 +61,8 @@ a |=> b |=> c;
 
 > 记忆技巧：`->` 一根箭头 = "当拍就看"，`=>` 两道杠 = "隔一拍再看"。
 
+> Mehta：14.9.1 Implication Operator；嵌套蕴含见 14.28 Nested Implications。
+
 ## 4. 采样值函数：`$rose` / `$fell` / `$stable` / `$past`
 
 这几个函数都是**边沿相关**的，比较的是"当前采样时刻"和"上一采样时刻"的值，**不是** Verilog 里的 `posedge`（`$rose` 不会在信号变化的瞬间触发，只在下一次时钟采样点才会被判定为真）。
@@ -80,6 +86,8 @@ property checkiack;
   @(posedge clk) $rose(intr) |=> $rose(iack);
 endproperty
 ```
+
+> Mehta：14.17 Sampled Value Functions（14.17.1 `$rose`、14.17.2 `$fell`、14.17.4 `$stable`、14.17.5 `$past`）；为什么用边沿函数见 14.17.3、多线程见 14.11 Concurrent Assertions Are Multi-threaded。
 
 ## 5. 常用系统函数
 
@@ -105,12 +113,16 @@ endproperty
 // req 上升沿之后 2~5 拍内 gnt 必须出现上升沿
 ```
 
+> Mehta：14.19 System Functions and Tasks（14.19.1 `$onehot`/`$onehot0`、14.19.2 `$isunknown`、14.19.3 `$countones`）。
+
 ## 6. `disable iff`：复位期间关闭断言
 
 ```systemverilog
 assert property (@(posedge clk) disable iff (reset) a |=> b);
 ```
 复位有效期间整条断言直接跳过求值，避免复位过程中的瞬态值触发误报。
+
+> Mehta：14.13 Disable (Property) Operator: disable iff。
 
 ## 7. `accept_on` / `reject_on`：带中止条件的属性
 
@@ -126,6 +138,8 @@ assert property (reqack);
 - 如果 `cycle_end` 和 `ack` 同一拍出现 —— **accept_on 优先**，判定为 pass。
 - `reject_on` 逻辑相反：中止条件出现时直接判为 **fail**。
 - 多个中止算子嵌套时的词法顺序（从左到右）固定为：`accept_on`、`reject_on`、`sync_accept_on`、`sync_reject_on`。
+
+> Mehta：14.25 Abort Properties: reject_on, accept_on, sync_reject_on, sync_accept_on。
 
 ## 8. 自测要点
 

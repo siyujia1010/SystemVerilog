@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 470" width="920" height="470" font-family="-apple-system, 'PingFang SC', 'Microsoft YaHei', 'Noto Sans CJK SC', 'Helvetica Neue', Arial, sans-serif">
+  <rect width="920" height="470" fill="#ffffff"/>
+
+  <text x="30" y="30" font-size="15" fill="#52606d">例：A 在 t=10 调用 run_ID(1, 50)，B 在 t=20 调用 run_ID(2, 0)；task 内部是 <tspan font-family="Menlo, Consolas, monospace">#t; $display(ID);</tspan></text>
+
+  <!-- ================= 左：static ================= -->
+  <rect x="20" y="46" width="430" height="404" rx="10" fill="#fff5f5" stroke="#f0b4b4" stroke-width="1.5"/>
+  <text x="40" y="76" font-size="19" font-weight="700" fill="#b42318">static（默认）</text>
+  <text x="40" y="98" font-size="13" fill="#52606d">所有调用共用同一份 ID、t → 后来的调用会覆盖前面的</text>
+
+  <!-- 时间轴：tx(t)=100+4.6*t -->
+  <line x1="100" y1="132" x2="390" y2="132" stroke="#9aa5b1" stroke-width="1.5"/>
+  <g stroke="#9aa5b1" stroke-width="1.5">
+    <line x1="100" y1="127" x2="100" y2="137"/><line x1="146" y1="127" x2="146" y2="137"/>
+    <line x1="192" y1="127" x2="192" y2="137"/><line x1="376" y1="127" x2="376" y2="137"/>
+  </g>
+  <g font-size="12" fill="#52606d" text-anchor="middle">
+    <text x="100" y="121">t=0</text><text x="146" y="121">t=10</text>
+    <text x="192" y="121">t=20</text><text x="376" y="121">t=60</text>
+  </g>
+
+  <!-- 调用 A -->
+  <text x="40" y="167" font-size="14" font-weight="700" fill="#1f2933">调用 A</text>
+  <rect x="146" y="150" width="230" height="26" rx="5" fill="#dbe9fb" stroke="#3b82c4" stroke-width="1.5"/>
+  <text x="261" y="168" font-size="12" fill="#1f2933" text-anchor="middle">写 ID=1，然后 #50 等待中…</text>
+  <circle cx="146" cy="163" r="5" fill="#3b82c4"/>
+  <circle cx="376" cy="163" r="5" fill="#b42318"/>
+  <text x="376" y="196" font-size="12" fill="#b42318" text-anchor="middle" font-weight="700">t=60 读 ID → 得到 2 ✗</text>
+
+  <!-- 调用 B -->
+  <text x="40" y="232" font-size="14" font-weight="700" fill="#1f2933">调用 B</text>
+  <circle cx="192" cy="228" r="6" fill="#f59e0b" stroke="#b8690f" stroke-width="1.5"/>
+  <text x="206" y="232" font-size="12" fill="#1f2933">写 ID=2，#0 后立刻打印 2</text>
+
+  <!-- 共享存储 -->
+  <text x="40" y="283" font-size="14" font-weight="700" fill="#1f2933">共享的 ID</text>
+  <rect x="100" y="268" width="46" height="26" fill="#eceff1" stroke="#9aa5b1" stroke-width="1.5"/>
+  <rect x="146" y="268" width="46" height="26" fill="#dbe9fb" stroke="#3b82c4" stroke-width="1.5"/>
+  <rect x="192" y="268" width="184" height="26" fill="#fcd9d5" stroke="#b42318" stroke-width="1.5"/>
+  <g font-size="13" font-weight="700" fill="#1f2933" text-anchor="middle">
+    <text x="169" y="286">1</text><text x="284" y="286">2</text>
+  </g>
+  <text x="284" y="312" font-size="12" fill="#b42318" text-anchor="middle">t=20：B 把 A 的 1 覆盖成了 2</text>
+  <!-- 从 A 的读取点指向存储 -->
+  <path d="M376 205 L376 266" stroke="#b42318" stroke-width="1.5" stroke-dasharray="4 3" fill="none"/>
+  <path d="M371 259 L376 267 L381 259" stroke="#b42318" stroke-width="1.5" fill="none"/>
+
+  <rect x="40" y="350" width="390" height="76" rx="8" fill="#ffffff" stroke="#f0b4b4" stroke-width="1.5"/>
+  <text x="235" y="382" font-size="13" fill="#52606d" text-anchor="middle">打印结果（按发生顺序）</text>
+  <text x="235" y="412" font-size="26" font-weight="700" fill="#b42318" text-anchor="middle" font-family="Menlo, Consolas, monospace">2, 2</text>
+
+  <!-- ================= 右：automatic ================= -->
+  <rect x="470" y="46" width="430" height="404" rx="10" fill="#f0faf4" stroke="#a6dcbb" stroke-width="1.5"/>
+  <text x="490" y="76" font-size="19" font-weight="700" fill="#1a7f45">automatic</text>
+  <text x="490" y="98" font-size="13" fill="#52606d">每次调用各有一份 ID、t → 互不干扰</text>
+
+  <!-- 时间轴：tx(t)=550+4.6*t -->
+  <line x1="550" y1="132" x2="840" y2="132" stroke="#9aa5b1" stroke-width="1.5"/>
+  <g stroke="#9aa5b1" stroke-width="1.5">
+    <line x1="550" y1="127" x2="550" y2="137"/><line x1="596" y1="127" x2="596" y2="137"/>
+    <line x1="642" y1="127" x2="642" y2="137"/><line x1="826" y1="127" x2="826" y2="137"/>
+  </g>
+  <g font-size="12" fill="#52606d" text-anchor="middle">
+    <text x="550" y="121">t=0</text><text x="596" y="121">t=10</text>
+    <text x="642" y="121">t=20</text><text x="826" y="121">t=60</text>
+  </g>
+
+  <!-- 调用 A -->
+  <text x="490" y="167" font-size="14" font-weight="700" fill="#1f2933">调用 A</text>
+  <rect x="596" y="150" width="230" height="26" rx="5" fill="#dbe9fb" stroke="#3b82c4" stroke-width="1.5"/>
+  <text x="711" y="168" font-size="12" fill="#1f2933" text-anchor="middle">写自己的 ID=1，#50 等待中…</text>
+  <circle cx="596" cy="163" r="5" fill="#3b82c4"/>
+  <circle cx="826" cy="163" r="5" fill="#1a7f45"/>
+  <text x="826" y="196" font-size="12" fill="#1a7f45" text-anchor="middle" font-weight="700">t=60 读自己的 ID → 1 ✓</text>
+
+  <!-- 调用 B -->
+  <text x="490" y="232" font-size="14" font-weight="700" fill="#1f2933">调用 B</text>
+  <circle cx="642" cy="228" r="6" fill="#f59e0b" stroke="#b8690f" stroke-width="1.5"/>
+  <text x="656" y="232" font-size="12" fill="#1f2933">写自己的 ID=2，立刻打印 2</text>
+
+  <!-- 两份存储 -->
+  <text x="490" y="283" font-size="14" font-weight="700" fill="#1f2933">A 的 ID</text>
+  <rect x="596" y="268" width="230" height="26" fill="#dbe9fb" stroke="#3b82c4" stroke-width="1.5"/>
+  <text x="711" y="286" font-size="13" font-weight="700" fill="#1f2933" text-anchor="middle">1</text>
+  <text x="490" y="322" font-size="14" font-weight="700" fill="#1f2933">B 的 ID</text>
+  <rect x="642" y="307" width="30" height="26" fill="#fde8c4" stroke="#b8690f" stroke-width="1.5"/>
+  <text x="657" y="325" font-size="13" font-weight="700" fill="#1f2933" text-anchor="middle">2</text>
+  <text x="686" y="325" font-size="12" fill="#1a7f45">各写各的，互不覆盖</text>
+  <path d="M826 205 L826 266" stroke="#1a7f45" stroke-width="1.5" stroke-dasharray="4 3" fill="none"/>
+  <path d="M821 259 L826 267 L831 259" stroke="#1a7f45" stroke-width="1.5" fill="none"/>
+
+  <rect x="490" y="350" width="390" height="76" rx="8" fill="#ffffff" stroke="#a6dcbb" stroke-width="1.5"/>
+  <text x="685" y="382" font-size="13" fill="#52606d" text-anchor="middle">打印结果（按发生顺序）</text>
+  <text x="685" y="412" font-size="26" font-weight="700" fill="#1a7f45" text-anchor="middle" font-family="Menlo, Consolas, monospace">2, 1</text>
+</svg>

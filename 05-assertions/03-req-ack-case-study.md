@@ -14,7 +14,7 @@
 
 ## 2. 断言代码（按原始笔记顺序，注释标出对应规格编号）
 
-![原始笔记截图](assets/req-ack-assertions-code.png)
+![原始笔记截图](../assets/req-ack-assertions-code.png)
 
 ```systemverilog
 // 1. The client and server are synchronized to a master clock.
@@ -48,7 +48,7 @@ ap_req_ack2: assert property (@(posedge clk) ack |-> past_req);
 
 ## 3. 时序图：req / ack / past_req 的关系
 
-![req/ack/past_req 时序图](assets/req-ack-timing-diagram.png)
+![req/ack/past_req 时序图](../assets/req-ack-timing-diagram.png)
 
 ASCII 版本（方便在不支持图片的地方查看）：
 
@@ -106,6 +106,8 @@ ap_req_ack2: assert property (@(posedge clk) ack |-> past_req);
 - `ack` 一到，`past_req` 清零。
 
 `ap_req_ack2: ack |-> past_req` 要求：**任何时候 `ack` 出现，`past_req` 必须已经是 1**——也就是说，`ack` 之前一定发生过一次尚未被响应的 `req`。这就是"影子寄存器"技巧在真实案例里的样子：不直接对 `req`/`ack` 的时序关系做复杂的窗口匹配，而是用一个额外的状态位把"协议历史"记录下来，再用一条简单的组合断言去检查它。
+
+> Mehta：14.17.5 `$past`（14.17.5.1 Application: `$past()`）。
 
 ## 5. 自测要点
 

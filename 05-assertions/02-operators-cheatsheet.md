@@ -11,6 +11,8 @@
 @(posedge clk) A[*1:2] |-> B;        // A 连续出现 1~2 次之后 B 为真
 ```
 
+> Mehta：14.18.1 ##m: Clock Delay；14.18.2 ##[m:n]: Clock Delay Range。
+
 ## 2. 序列之间的组合（时序级）：`and` / `or` / `intersect` / `not`
 
 在**序列（sequence）之间**做组合时，用的是 `and`、`or`、`intersect`、`not`（不是信号级的 `&&`/`||`）：
@@ -38,12 +40,16 @@ endproperty
 ```
 逻辑拆解：内层序列 `!ack[*0:$] ##1 $rose(req)` 表示"ack 一直不来，直到下一次 req 又来了"——这是我们**不希望**发生的情况，所以外面套一层 `not`，命中这种坏情况就 fail，没命中（即 ack 确实在下一次 req 之前来了）就 pass。
 
+> Mehta：14.18.13 Seq1 and Seq2、14.18.15 Seq1 or Seq2、14.18.16 Seq1 "intersect" Seq2、14.18.20 not Operator。
+
 ## 3. `first_match`：只取第一次匹配
 
 ```systemverilog
 @(posedge clk) first_match(A |-> B) |-> C;
 // 只能用在蕴含操作符左边（antecedent 位置），取多个可能匹配里的第一个
 ```
+
+> Mehta：14.18.18 first_match（14.18.19 Application）。
 
 ## 4. `throughout` / `within`：谁包住谁
 
@@ -57,12 +63,16 @@ endproperty
 
 一句话区分：**`within`** 是"我这段发生在你那段区间里面"；**`throughout`** 是"我从头到尾一直成立，贯穿你那一串"。
 
+> Mehta：14.18.10 Sig1 throughout Seq1；14.18.11 Seq1 within Seq2。
+
 ## 5. `ended()`：引用另一个序列的结束点
 
 ```systemverilog
 @(posedge clk) $rose(C) |-> sequence_inst(param1, param2).ended();
 // 使用 .ended() 时，前面不能再接表达式操作符
 ```
+
+> Mehta：14.22 End Point of a Sequence (.triggered)（14.22.1 .matched）。
 
 ## 6. 重复操作符（Repetition Operators）
 
@@ -86,6 +96,8 @@ endproperty
 @(posedge clk) A |=> B[=1:2] |=> C;
 // A 之后：B 非连续出现 1~2 次，但结束点不是 B 本身，其后还要再等一拍才看 C
 ```
+
+> Mehta：14.18.3 `[*m]`、14.18.4 `[*m:n]`、14.18.5 `[=m]`、14.18.6 `[=m:n]`、14.18.7 `[->]`；`[=m:n]` 与 `[->m:n]` 的区别见 14.18.8。
 
 ## 7. 手写笔记里的原始速记（保留原文，便于对照）
 

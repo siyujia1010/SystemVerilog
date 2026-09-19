@@ -30,6 +30,8 @@ light l = light'(c);    // 用 light'(...) 把整数 1 转型回枚举类型 lig
 
 如果不加 `light'(...)` 这个转型，直接写 `light l = c;` 是不合法的（整数不能隐式赋给枚举类型）。
 
+> Mehta：2.9 Enumerated Types；enum 与整数互转另见 2.13 Static Casting、2.14 Dynamic Casting（`$cast`）。
+
 ### 内置方法：遍历所有取值
 
 | 方法 | 作用 |
@@ -50,3 +52,5 @@ end while (l != l.first());
 ```
 
 这是一个 `do...while` 循环：先从第一个值开始，每次取下一个值，直到 `.next()` 转了一整圈、又绕回到 `first()` 为止。用 `do...while` 而不是普通 `while`，是因为要保证循环体至少执行一次（哪怕枚举类型只有一个值）。
+
+> Mehta：2.9.1 Enumerated-Type Methods（`first/last/next/prev/num`）。

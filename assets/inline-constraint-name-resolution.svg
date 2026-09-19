@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 920 476" width="920" height="476" font-family="-apple-system, 'PingFang SC', 'Microsoft YaHei', 'Noto Sans CJK SC', 'Helvetica Neue', Arial, sans-serif">
+  <rect width="920" height="476" fill="#ffffff"/>
+
+  <!-- ================= 代码面板 ================= -->
+  <rect x="20" y="44" width="520" height="340" rx="10" fill="#f7f8fa" stroke="#d3d9e0" stroke-width="1.5"/>
+  <text x="20" y="28" font-size="17" font-weight="700" fill="#1f2933">with { } 里的 x、y、z 各指向谁？——圈出来看归属</text>
+
+  <g font-family="Menlo, Consolas, monospace" font-size="14" fill="#1f2933">
+    <text x="36.0" y="72" textLength="75.6" lengthAdjust="spacing">class C1;</text>
+    <text x="52.8" y="94" textLength="126.0" lengthAdjust="spacing">rand integer x;</text>
+    <text x="36.0" y="116" textLength="67.2" lengthAdjust="spacing">endclass</text>
+    <text x="36.0" y="148" textLength="75.6" lengthAdjust="spacing">class C2;</text>
+    <text x="52.8" y="170" textLength="84.0" lengthAdjust="spacing">integer x;</text>
+    <text x="153.6" y="170" textLength="84.0" lengthAdjust="spacing">integer y;</text>
+    <text x="52.8" y="194" textLength="319.2" lengthAdjust="spacing">task doit(C1 f, integer x, integer z);</text>
+    <text x="69.6" y="226" textLength="344.4" lengthAdjust="spacing">result = f.randomize() with {x &lt; y + z;};</text>
+    <text x="69.6" y="274" textLength="403.2" lengthAdjust="spacing">result = f.randomize() with {local::x &lt; y + z;};</text>
+    <text x="52.8" y="320" textLength="58.8" lengthAdjust="spacing">endtask</text>
+    <text x="36.0" y="342" textLength="67.2" lengthAdjust="spacing">endclass</text>
+  </g>
+  <g font-size="12" fill="#7b8794">
+    <text x="424" y="226">// 裸 x</text>
+    <text x="482" y="274">// local::</text>
+  </g>
+
+  <!-- 圈：C1::x（橙） -->
+  <g fill="none" stroke-width="2">
+    <circle cx="166.2" cy="89"  r="8.6" stroke="#d97706"/>
+    <circle cx="317.4" cy="221" r="8.6" stroke="#d97706"/>
+    <!-- C2::x（灰虚线，被遮蔽） -->
+    <circle cx="124.2" cy="165" r="8.6" stroke="#9aa5b1" stroke-dasharray="3 3"/>
+    <!-- C2::y（绿） -->
+    <circle cx="225"   cy="165" r="8.6" stroke="#2f9e5b"/>
+    <circle cx="351"   cy="221" r="8.6" stroke="#2f9e5b"/>
+    <circle cx="409.8" cy="269" r="8.6" stroke="#2f9e5b"/>
+    <!-- 局部（蓝） -->
+    <circle cx="258.6" cy="189" r="8.6" stroke="#2563eb"/>
+    <circle cx="351"   cy="189" r="8.6" stroke="#2563eb"/>
+    <circle cx="384.6" cy="221" r="8.6" stroke="#2563eb"/>
+    <circle cx="443.4" cy="269" r="8.6" stroke="#2563eb"/>
+    <rect x="308" y="256" width="77" height="24" rx="12" stroke="#2563eb"/>
+  </g>
+
+  <!-- 逐行标注 -->
+  <g font-size="12.5" font-weight="700">
+    <text x="60"  y="246" fill="#d97706">x → ① C1::x</text>
+    <text x="180" y="246" fill="#2f9e5b">y → ② C2::y</text>
+    <text x="300" y="246" fill="#2563eb">z → ③ 局部 z</text>
+    <text x="60"  y="298" fill="#2563eb">local::x → ③ 局部 x</text>
+    <text x="230" y="298" fill="#2f9e5b">y → ② C2::y</text>
+    <text x="350" y="298" fill="#2563eb">z → ③ 局部 z</text>
+  </g>
+
+  <!-- ================= 右侧：三个作用域 ================= -->
+  <text x="570" y="62" font-size="13" fill="#52606d">查找顺序：① → ②/③（普通作用域）</text>
+
+  <!-- ① 被随机化对象 -->
+  <rect x="570" y="72" width="330" height="76" rx="10" fill="#fff6e8" stroke="#d97706" stroke-width="1.5"/>
+  <text x="586" y="96" font-size="14" font-weight="700" fill="#1f2933">① 被随机化的对象 f（类型 C1）</text>
+  <rect x="586" y="108" width="36" height="28" rx="6" fill="#fde3b8" stroke="#d97706" stroke-width="2"/>
+  <text x="604" y="127" font-size="15" font-weight="700" fill="#8a4f08" text-anchor="middle" font-family="Menlo, Consolas, monospace">x</text>
+  <text x="634" y="127" font-size="13" fill="#1f2933">C1::x（rand integer x）</text>
+
+  <!-- ② 当前类 C2 -->
+  <rect x="570" y="160" width="330" height="106" rx="10" fill="#f0faf4" stroke="#2f9e5b" stroke-width="1.5"/>
+  <text x="586" y="184" font-size="14" font-weight="700" fill="#1f2933">② 当前类 C2 的成员</text>
+  <rect x="586" y="194" width="36" height="28" rx="6" fill="#f3f5f7" stroke="#9aa5b1" stroke-width="2" stroke-dasharray="3 3"/>
+  <text x="604" y="213" font-size="15" font-weight="700" fill="#7b8794" text-anchor="middle" font-family="Menlo, Consolas, monospace">x</text>
+  <text x="634" y="209" font-size="12.5" fill="#52606d">C2::x：被 ① 抢先，</text>
+  <text x="634" y="225" font-size="12.5" fill="#52606d">with{} 里的裸 x 不会指向它</text>
+  <rect x="586" y="232" width="36" height="28" rx="6" fill="#d3f0df" stroke="#2f9e5b" stroke-width="2"/>
+  <text x="604" y="251" font-size="15" font-weight="700" fill="#14653a" text-anchor="middle" font-family="Menlo, Consolas, monospace">y</text>
+  <text x="634" y="251" font-size="13" fill="#1f2933">C2::y（① 里没有 y，才找到这里）</text>
+
+  <!-- ③ task 局部 -->
+  <rect x="570" y="278" width="330" height="106" rx="10" fill="#eef4ff" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="586" y="302" font-size="14" font-weight="700" fill="#1f2933">③ task doit 的局部作用域（形参）</text>
+  <rect x="586" y="312" width="36" height="28" rx="6" fill="#d6e4ff" stroke="#2563eb" stroke-width="2"/>
+  <text x="604" y="331" font-size="15" font-weight="700" fill="#1e40af" text-anchor="middle" font-family="Menlo, Consolas, monospace">x</text>
+  <text x="634" y="331" font-size="13" fill="#1f2933">局部 x：必须写 <tspan font-family="Menlo, Consolas, monospace" font-weight="700">local::x</tspan></text>
+  <rect x="586" y="348" width="36" height="28" rx="6" fill="#d6e4ff" stroke="#2563eb" stroke-width="2"/>
+  <text x="604" y="367" font-size="15" font-weight="700" fill="#1e40af" text-anchor="middle" font-family="Menlo, Consolas, monospace">z</text>
+  <text x="634" y="367" font-size="13" fill="#1f2933">局部 z（① 里没有 z，直接命中）</text>
+
+  <!-- ================= 规则 ================= -->
+  <rect x="20" y="398" width="880" height="64" rx="10" fill="#fff8ec" stroke="#e3b56b" stroke-width="1.5"/>
+  <text x="36" y="423" font-size="13.5" fill="#1f2933"><tspan font-weight="700">规则：</tspan>with{} 里的裸标识符，先在被随机化的对象（这里是 f）里找；找不到，才按普通作用域往外找。</text>
+  <text x="36" y="447" font-size="13.5" fill="#1f2933">想指定 task 的局部变量 / 形参，必须加 <tspan font-family="Menlo, Consolas, monospace" font-weight="700">local::</tspan> —— 这是区分"约束对象自身成员"和"外部同名变量"的唯一办法。</text>
+</svg>

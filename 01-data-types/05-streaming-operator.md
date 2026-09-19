@@ -9,7 +9,7 @@ array = {<<8{array}};   // 21
 
 配图示例（32位数据按字节/半字节做 byte swap / nibble swap）：
 
-![流操作符 nibble swap / byte swap 示意图（图源：硅芯思见）](assets/streaming-operator-nibble-byte-swap.png)
+![流操作符 nibble swap / byte swap 示意图（图源：硅芯思见）](../assets/streaming-operator-nibble-byte-swap.png)
 
 ```
 result = 32'h12345678
@@ -60,6 +60,8 @@ s3, s2, s1, s0 → 0x21, 0x43, 0x65, 0x87
 ### 总结
 
 滑动窗口大小(n)决定了"组"的粒度，`<<`/`>>`只是控制流的方向（从高位起还是从低位起切），最终效果都是把这些n位的组按顺序整体颠倒重排。**这个操作符最常见的实际用途就是做大小端转换（byte swap / nibble swap）。**
+
+> Mehta：12.13 Streaming Operators (pack/unpack)（12.13.1 Packing of Bits、12.13.2 Unpacking of Bits）。
 
 ## 相关笔记
 

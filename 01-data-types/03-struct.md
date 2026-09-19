@@ -26,6 +26,8 @@ money array = '{coins:100，default: 0, data:0};
 
 > ⚠️ 笔记里这个 `money` 例子本身有一处需要留意：`packed` 结构体要求所有成员都是可打包的（整型/packed 类型），而 `real dollars;` 是浮点类型，并不满足这个条件。这行大概率是手写笔记速记时的简化/笔误，实际写 packed 结构体时不能塞 `real` 成员。复习到这里时建议对照原始资料再确认一遍这个例子的准确写法，这里先如实保留原文，避免我自己瞎改动了原始记录。
 
+> Mehta：5.1 Packed Structure、5.2 Unpacked Structure。
+
 ### 结构体字面量赋值：`'{...}` 与 `default`
 
 ```systemverilog
@@ -39,3 +41,5 @@ money array = '{coins:100, default: 0, data:0};
 - `data: 0`：显式把 `data` 也设成 0（相当于覆盖了 `default` 对 `data` 本来也会生效的填充值，只是这里写的值恰好一样）
 
 关键规则：**写在后面的具体成员赋值，会覆盖 `default` 对该成员的默认填充**——`default` 更像是"兜底"，具体点名的成员优先级更高。这也是为什么原始笔记特意加了一句注释"default 中的内容可以被后面的覆盖"。
+
+> Mehta：5.1 Packed Structure（讲了 `'{...}` 赋值与 `default:`）、5.2 Unpacked Structure。

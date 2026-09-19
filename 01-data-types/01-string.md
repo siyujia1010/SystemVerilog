@@ -42,3 +42,5 @@ byte c = s.getc(1);        // c = "e" 的 ASCII 码
 int  n = "123".atoi();     // n = 123
 string sub = s.substr(1,3); // "ell"
 ```
+
+> Mehta：2.11 String Data Type（2.11.1 String Operators、2.11.2 String Methods）。

@@ -15,6 +15,8 @@
 1. `cover property`（属于 SVA 的一部分，见断言笔记）——本质是 `assert` 的"影子"，同一个 property 既能拿来断言，也能拿来统计覆盖率（时序/组合域覆盖）。只能用在 module/program/interface，不能用在 class 里。
 2. `covergroup` / `coverpoint` / `bins`（本文重点）——可以用在 class 里，专门用来统计**变量/表达式的取值分布**。
 
+> Mehta：15.1 Difference Between Code Coverage and Functional Coverage；15.2 Functional Coverage Methodology。
+
 ## 2. covergroup 基本结构
 
 ```systemverilog
@@ -36,6 +38,8 @@ cg cg_inst = new();                // 像 class 一样，需要 new() 实例化
 - 定义了 covergroup 之后必须 `new()` 出实例才会真正采样。
 - 采样可以用时钟事件触发（如上），也可以手动调用 `cg_inst.sample()`。
 
+> Mehta：15.3 Covergroup: Basics；手动 `sample()` 见 15.14 User-Defined "sample()" Method。
+
 ## 3. coverpoint 与 bins
 
 `coverpoint` 是"要覆盖的表达式"，`bins` 是这个表达式落在哪个"桶"里才算覆盖到。
@@ -56,6 +60,8 @@ endgroup
 
 一句话记忆：**`bins name[] = {...}` → 数组形式，一个值一个格子；`bins name = {...}` → 一个 bin，多个值共享一个格子。**
 
+> Mehta：15.4 Coverpoint: Basics；15.5 "bins": Basics（15.5.2 "bins" Filtering）。
+
 ### 3.2 ignore_bins / illegal_bins
 
 ```systemverilog
@@ -72,6 +78,8 @@ endgroup
 
 区别：`ignore_bins` 只是"不算数"，安静地跳过；`illegal_bins` 是"这个值根本不该出现"，采样到就是运行时错误（优先级高于其他 bins，即使同时属于别的合法 bin 也会报错）。
 
+> Mehta：15.11 "ignore_bins"、15.12 "illegal_bins"。
+
 ### 3.3 wildcard bins
 
 ```systemverilog
@@ -80,6 +88,8 @@ coverpoint a[3:0] {
 }
 ```
 `?` 在 wildcard bin 里代表"0 或 1 都行"（don't care），所以 `4'b11??` 匹配 1100/1101/1110/1111 这 4 个值，命中任意一个都算这个 bin 覆盖到。
+
+> Mehta：15.10 "wildcard bins"。
 
 ### 3.4 transition bins（跳变覆盖）
 
@@ -98,6 +108,8 @@ coverpoint var_a {
 }
 ```
 
+> Mehta：15.9 "bins" for Transition Coverage。
+
 ### 3.5 default bins 的坑
 
 ```systemverilog
@@ -110,6 +122,8 @@ covergroup test_cg @(posedge clk);
 endgroup
 ```
 `default` 会把"除已列出之外的所有取值"各建一个独立 bin。对一个 32 位 `int` 来说，这意味着可能产生 2^32 - 2 个 bin，**极易让仿真器崩溃或内存爆炸**，慎用。
+
+> Mehta：15.5 "bins": Basics（书中提到 coverpoint 可以用 `default` 收集其余取值，cross 里不能用 `default`，见 15.8）。
 
 ## 4. cross coverage（交叉覆盖）
 
@@ -139,6 +153,8 @@ endgroup
 ```
 
 **注意**：cross coverage 只能在**同一个 covergroup 内**的 coverpoint 之间做。
+
+> Mehta：15.8 "cross" Coverage。
 
 ## 5. 小结 / 自测要点
 

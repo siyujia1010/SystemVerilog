@@ -37,6 +37,8 @@ logic [7:0] m [2][2] = '{ '{5, 10}, '{15, 20} };
 
 `$size(array, n)` 返回第 `n` 个 unpacked 维度的大小（维度编号从 1 开始，1 表示最左边、最外层的那个维度）。对 `mem3 [0:3][0:1]` 来说，第 1 维是 `[0:3]`，共 4 个，所以 `$size(mem3, 1) = 4`。
 
+> Mehta：3.1 Packed and Unpacked Arrays；赋值、索引与切片见 3.2 Assigning, Indexing, and Slicing of Arrays。
+
 ## 2. 动态数组（Dynamic Array）
 
 ### 原始笔记
@@ -76,6 +78,8 @@ array = new[20](array);   // 扩容到 20 个元素，前面原有的内容保�
 
 `typedef int array[];` 是给"元素类型为 int 的动态数组"这个类型起个别名，方便复用（笔记里把类型名也叫 `array`，容易和变量名搞混，实际使用时建议换个名字，比如 `typedef int int_da_t[];`，再用 `int_da_t my_arr;` 声明变量）。
 
+> Mehta：3.3 Dynamic Arrays（3.3.1 Resizing、3.3.2 Copying）。
+
 ## 3. 关联数组（Associative Array）
 
 ### 原始笔记
@@ -114,6 +118,8 @@ end
 ```
 
 笔记开头那行 `array queue[$];` 其实是想示范"队列"的声明形式 `<元素类型> <变量名>[$];`（这里的"array"和"queue"只是占位名字），真正的队列语法和用法见下一节。
+
+> Mehta：3.4 Associative Arrays（3.4.5 Associative Array Methods）。
 
 ## 4. 队列（Queue）
 
@@ -157,6 +163,8 @@ array[$+1] = 3;          // 在末尾追加一个新元素 3（等价于 push_ba
 | `.pop_front()` | 弹出并返回队头元素 |
 | `.delete(idx)` | 删除指定下标的元素；不带参数删除整个队列 |
 
+> Mehta：第 4 章 Queues（4.1 Queue Methods）。
+
 ## 5. 数组的流操作符（Streaming / Pack-Unpack）
 
 ### 原始笔记
@@ -195,3 +203,5 @@ bit [15:0] array2 = {<<8{array}};  // <<8 表示以 8 位为一个"切片"做反
 ```
 
 这在处理协议报文的打包/解包（比如把多个字段拼成一个总线宽度的信号，或者反过来从总线信号里取出各个字段）时非常常用。
+
+> Mehta：12.13 Streaming Operators (pack/unpack)（12.13.1 Packing of Bits、12.13.2 Unpacking of Bits）；深入版见 [05-streaming-operator.md](05-streaming-operator.md)。
