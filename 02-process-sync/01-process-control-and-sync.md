@@ -9,11 +9,16 @@
 | `fork ... join` | 父线程阻塞，直到 fork 块内**全部**子进程执行完 |
 | `fork ... join_any` | 父线程阻塞，直到 fork 块内**任意一个**子进程执行完就继续（对只有一个子进程的 fork 块来说，效果等同于 `join`） |
 | `fork ... join_none` | 父线程**不阻塞**，fork 出子进程后立刻继续往下执行，子进程在后台独立运行 |
-| `wait fork;` | 阻塞当前进程，直到它**直接或间接派生出的所有子孙进程**（无论当初是用 `join`/`join_any`/`join_none` 中的哪一种派生的）全部结束 |
+| `wait fork;` | 阻塞当前进程，直到它的**所有直接子进程**（immediate children，无论当初是用 `join`/`join_any`/`join_none` 中的哪一种派生的）全部结束。**不等孙进程**（子进程自己再 fork 出来的进程） |
 
 另外还有 `disable fork;`，可以强制杀死当前进程派生出的所有还在运行的子进程（先记一笔，后续遇到具体例子再补充）。
 
-**最容易搞混的一点**：`join_none` 只是说"这一层 fork 块要不要等它的子进程"，并不代表这些子进程会被"放弃"或者提前终止——它们仍然在后台跑着。`wait fork` 则是不管当初用了哪种收尾方式，一律把所有还在运行的后代进程都等一遍。
+**最容易搞混的两点**：
+
+1. `join_none` 只是说"这一层 fork 块要不要等它的子进程"，并不代表这些子进程会被"放弃"或者提前终止——它们仍然在后台跑着。
+2. `wait fork` 等的是**直接子进程**，不是"所有后代"。一个子进程如果用 `join_none` 派生了孙进程然后自己立刻结束，`wait fork` 看到这个子进程已结束就放行，**不会**再等那个还在后台跑的孙进程（见 §2 例题里的 `fork_3`）。
+
+> "子进程"怎么数：fork 块里**每一条并列的语句**各是一个子进程；一条语句内部再 fork 出来的进程是孙进程。
 
 ## 2. fork 综合例题
 
@@ -44,28 +49,43 @@ endprogram
 
 ### 逐步推演
 
-外层 `initial` 用 `join_none` 派生 `fork_main`——**不等待**，立刻往下走到 `#0;`，所以 "Before wait fork" 在 t=0 附近就打印出来了，根本不会等 `fork_main` 里的三个子 fork 跑完。
+**先看进程层次**。`fork : fork_main ... join_none` 里面并排写了三个内层 fork——它们是 `fork_main` 的**三条并列分支**（不是 `begin...end` 里的先后顺序），所以 t=0 时**同时启动**，并且都是外层 `initial` 的直接子进程：
 
-与此同时，`fork_main` 自己在 t=0 开始独立运行：
+```
+initial（外层进程）
+ └─ fork_main（join_none）── 三条并列分支，t=0 同时启动 = initial 的 3 个直接子进程
+     ├─ 分支1：fork_1（join）      ── 孙进程：#5  打印 fork_1
+     ├─ 分支2：fork_2（join_any）  ── 孙进程：#10 打印 fork_2
+     └─ 分支3：fork_3（join_none） ── 孙进程：#20 打印 fork_3
+```
 
-1. 派生 `fork_1`，用的是 `join`——必须等 `fork_1` 跑完（5 个时间单位）才能往下走。→ **t=5：打印 "fork_1"**。
-2. 派生 `fork_2`，用的是 `join_any`——`fork_2` 内只有一个子进程，`join_any` 在"任意一个子进程完成"时就放行，对单进程来说效果等同于 `join`，所以还是要等它跑完（10 个时间单位，从 t=5 开始，到 t=15 结束）。→ **t=15：打印 "fork_2"**。
-3. 派生 `fork_3`，用的是 `join_none`——不等待，立刻继续。`fork_main` 这个 fork 块本身在这里就算"结束"了（因为它不用等 `fork_3`），但 `fork_3` 这个子进程仍然在后台独立跑着，还需要 20 个时间单位才会真正结束（t=15+20=**t=35**）。→ **t=35：打印 "fork_3"**。
+**时间线**：
 
-回到最外层 `initial`：在 t≈0 打印完 "Before wait fork" 之后，执行到 `wait fork;`——这里的关键是，`wait fork` 等待的是**这个进程派生出的所有子孙进程**，不管它们是用 `join`、`join_any` 还是 `join_none` 派生的，**全部**都要结束。也就是说，即使 `fork_3` 是用 `join_none` "放养"出去的，`wait fork` 依然会一直等到它跑完为止。所以：
+| 时刻 | 发生了什么 |
+|---|---|
+| t=0 | `initial` 用 `join_none` 派生 `fork_main`，**不等待**，往下走到 `#0;`（让出一次调度，三条分支得以启动），打印 **"Before wait fork"**，然后停在 `wait fork;` 上。<br>三条分支各自派生孙进程：分支1（`join`）和分支2（`join_any`）要等自己的孙进程；分支3 用 `join_none`，派生完 `fork_3` 的孙进程后**立刻结束**，孙进程（`#20`）留在后台 |
+| t=5 | 分支1 的孙进程打印 **"fork_1"**，`join` 满足，分支1 结束 |
+| t=10 | 分支2 的孙进程打印 **"fork_2"**，`join_any` 放行，分支2 结束。<br>至此 `initial` 的 3 个直接子进程（分支1/2/3）**全部结束** → `wait fork` 返回 → 打印 **"After wait fork"**（紧跟在 "fork_2" 之后，因为分支2 要等 `fork_2` 的 `$display` 执行完才能结束） |
+| t=20 | 分支3 派生的 `fork_3` 孙进程（一直在后台跑）打印 **"fork_3"**——`wait fork` 不等孙进程，所以它比 "After wait fork" 晚 |
+| t=110 | `wait fork` 在 t=10 返回后还有 `#100;`，10+100=110，与 VCS 报告里的 `$finish at simulation time 110` 吻合 |
 
-- `wait fork` 要一直等到最慢的那个子孙进程 `fork_3` 结束，也就是 **t=35**。
-- **t=35：打印 "After wait fork"**（紧跟在 "fork_3" 之后，因为两者在同一个仿真时刻，`fork_3` 的 `$display` 先执行完，`wait fork` 才检测到"全部子进程已结束"并唤醒主线程）。
+**易错点小结**：
+- "fork_2 在 t=10 而不是 t=15"——因为三个内层 fork 是**并行**的，`fork_2` 不需要等 `fork_1` 跑完再启动。
+- "After wait fork 在 t=10 而不是 t=20"——`wait fork` 只等直接子进程，`fork_3` 的 `#20` 是孙进程，不在等待范围内。
 
 ### 最终输出顺序
 
 ```
 time =  0 : Before wait fork
 time =  5 : fork_1
-time = 15 : fork_2
-time = 35 : fork_3
-time = 35 : After wait fork
+time = 10 : fork_2
+time = 10 : After wait fork
+time = 20 : fork_3
 ```
+
+VCS 实测输出（`%t` 在 VCS 里会带宽度填充，上面为了对齐省略了多余空格；输出顺序和时间戳完全一致）：
+
+![fork/join 综合例题 VCS 仿真输出](assets/fork-join-vcs-output.png)
 
 ## 3. `automatic` vs `static` 任务 —— 并发竞态经典案例
 
@@ -170,9 +190,10 @@ mailbox 是线程之间传递数据的队列：`put`/`get` 是阻塞版本，`tr
 
 1. `join_any` 用在只有一个子进程的 fork 块里，和 `join` 有什么区别？（提示：没区别，效果一样）
 2. 为什么 "Before wait fork" 几乎在 t=0 就打印，而不是等 `fork_main` 里的三个子 fork 都跑完？
-3. `wait fork` 和 `join_none` 的本质区别是什么？（提示：`join_none` 只管"这一层 fork 块要不要等"；`wait fork` 是"扫一遍我派生出的所有后代进程，等它们全部结束"）
-4. 如果把最内层的 `join_none`（`fork_3` 那个）改成 `join`，`fork_main` 自己会在什么时候"结束"？这会不会影响外层 `initial` 的行为？（提示：`fork_main` 本身是用 `join_none` 派生的，所以无论它内部怎么改，外层 initial 都不会等它）
-5. `@e` 和 `wait(e.triggered)` 在"触发与阻塞同时发生"这种边界情况下，行为有什么不同？
-6. `run_ID` 例子里，为什么 `automatic` 输出 `2, 1`，而 `static` 输出 `2, 2`？
-7. `$display`、`$strobe`、`$monitor` 分别在什么时候打印？连续调用两次 `$monitor` 会怎样？
-8. semaphore 的 `get` 和 `try_get` 有什么区别？各适合什么场景？
+3. `wait fork` 和 `join_none` 的本质区别是什么？（提示：`join_none` 只管"这一层 fork 块要不要等"；`wait fork` 是"等我所有**直接子进程**结束"，不等孙进程）
+4. 为什么例题里 "fork_2" 在 t=10 而不是 t=15？三个内层 fork 之间是什么关系？（提示：它们是 `fork_main` 的并列分支，t=0 同时启动）
+5. 为什么 "After wait fork" 在 t=10 打印，比 "fork_3"（t=20）还早？如果把 `fork_3` 那个 `join_none` 改成 `join`，"After wait fork" 会在什么时候打印？（提示：改成 `join` 后分支3 要等 `#20` 的孙进程，成了 t=20 才结束的直接子进程；此时输出是 "fork_3" 在前、"After wait fork" 在后，都在 t=20）
+6. `@e` 和 `wait(e.triggered)` 在"触发与阻塞同时发生"这种边界情况下，行为有什么不同？
+7. `run_ID` 例子里，为什么 `automatic` 输出 `2, 1`，而 `static` 输出 `2, 2`？
+8. `$display`、`$strobe`、`$monitor` 分别在什么时候打印？连续调用两次 `$monitor` 会怎样？
+9. semaphore 的 `get` 和 `try_get` 有什么区别？各适合什么场景？
