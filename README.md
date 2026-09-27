@@ -18,7 +18,7 @@
 
 | 文件 | 内容 |
 |---|---|
-| [02-constrained-random/01.randomize_and_constraints.md](02-constrained-random/01.randomize_and_constraints.md) | `$urandom_range`、`randomize() with` 与 `local::`（含变量归属图）、`rand_mode` / `constraint_mode`、soft、`dist`（`:=` vs `:/`）、数组归约约束、`solve...before` 概率偏置（含概率分布图） |
+| [02-constrained-random/01.randomize_constraints.md](02-constrained-random/01.randomize_constraints.md) | `$urandom_range`、`randomize() with` 与 `local::`（含变量归属图）、`rand_mode` / `constraint_mode`、soft、`dist`（`:=` vs `:/`）、数组归约约束、`solve...before` 概率偏置（含概率分布图） |
 
 ### 第三章：进程控制与同步（fork/join / task 生命周期 / 事件 / 信号量）
 
@@ -28,7 +28,9 @@
 
 ### 第四章：功能覆盖率（Functional Coverage）
 
-- [04-functional-coverage/README.md](04-functional-coverage/README.md) —— covergroup / coverpoint / bins / cross
+| 文件 | 内容 |
+|---|---|
+| [04-functional-coverage/01.functional_coverage.md](04-functional-coverage/01.functional_coverage.md) | covergroup / coverpoint / bins / cross 基础；两种采样触发方式对比；覆盖率查询 `get_coverage`/`get_inst_coverage`；`type_option`/`option`（含 `per_instance`/`weight`）；`iff` 采样条件；bins 进阶写法（开放范围、固定数量、`with` 过滤、wildcard×transition、重复跳转）；`binsof`/`intersect` |
 
 ### 第五章：断言（SystemVerilog Assertions）
 
@@ -36,7 +38,7 @@
 |---|---|
 | [05-assertions/01.basics.md](05-assertions/01.basics.md) | 断言基础：immediate vs concurrent、property/sequence、`\|->` vs `\|=>`、采样值函数 `$rose/$fell/$stable/$past` |
 | [05-assertions/02.operators_cheatsheet.md](05-assertions/02.operators_cheatsheet.md) | SVA 操作符速查表（and/or/intersect/not/throughout/within/first_match/重复操作符等） |
-| [05-assertions/03.req_ack_case_study.md](05-assertions/03.req_ack_case_study.md) | 综合案例：req/ack 握手协议断言（7 条规格、时序图、past_req 影子寄存器、local variable ID 匹配进阶版） |
+| [05-assertions/03.req_ack_case_study.md](05-assertions/03.req_ack_case_study.md) | 综合案例：req/ack 握手协议断言（7 条规格、时序图、past_req 影子寄存器、两种 local variable ID 匹配写法对比，含交互动画） |
 
 ### 后续章节（占位，陆续补充）
 
@@ -49,8 +51,10 @@
 - [x] 第二章：随机约束（inline 约束名字解析、soft、dist、solve...before）—— 已完成
 - [x] 第三章：进程控制与同步（fork/join 综合例题、automatic/static 竞态、@ vs wait、semaphore/mailbox）—— 已完成
 - [x] 第四章：功能覆盖率（covergroup/coverpoint/bins 数组 vs 单 bin/cross）—— 已完成，自测题全部答对
+- [x] 第四章：功能覆盖率进阶（采样方式对比、覆盖率查询、type_option/option、iff、bins 进阶写法、binsof/intersect）—— 已完成
 - [x] 第五章：断言基础（14.9 并发断言基础、14.9.1 重叠 vs 非重叠蕴含、14.17 采样值函数）—— 已完成
 - [x] 第五章：req/ack 握手协议综合案例（7 条规格 + past_req 影子寄存器 + local variable ID 匹配）—— 已完成
+- [x] 第五章：property 内联局部变量写法（id_save），与 sequence 版本对比 + 交互动画 —— 已完成
 - [ ] 后续：功能覆盖率与断言的联合追踪（coverage-driven verification 收尾）
 - [ ] 第六章：类的封装与继承
 
