@@ -18,7 +18,7 @@
 
 | 文件 | 内容 |
 |---|---|
-| [02-constrained-random/01.randomize_constraints.md](02-constrained-random/01.randomize_constraints.md) | `$urandom_range`、`randomize() with` 与 `local::`（含变量归属图）、`rand_mode` / `constraint_mode`、soft、`dist`（`:=` vs `:/`）、数组归约约束、`solve...before` 概率偏置（含概率分布图） |
+| [02-constrained-random/01.randomize_constraints.md](02-constrained-random/01.randomize_constraints.md) | `$urandom_range`；transaction 类与 `rand` 变量、UVM 字段宏；约束写法（static、soft、`inside`、`->`/if-else、`dist`（`:=` vs `:/`）、`unique`、`foreach`、数组归约、约束中调用函数）；`randomize() with` 与 `local::`（含变量归属图）；`rand_mode` / `constraint_mode`；`solve...before` 概率偏置（含概率分布图） |
 
 ### 第三章：进程控制与同步（fork/join / task 生命周期 / 事件 / 信号量）
 
@@ -49,6 +49,7 @@
 - [x] 第一章：数据类型（string / enum / struct / 数组）—— 已完成
 - [x] 第一章：流操作符深入（nibble swap / byte swap）—— 已完成
 - [x] 第二章：随机约束（inline 约束名字解析、soft、dist、solve...before）—— 已完成
+- [x] 第二章：约束写法补全（item transaction、rand/动态数组、static、inside、if-else、unique、foreach、约束中调用函数）—— 已完成
 - [x] 第三章：进程控制与同步（fork/join 综合例题、automatic/static 竞态、@ vs wait、semaphore/mailbox）—— 已完成
 - [x] 第四章：功能覆盖率（covergroup/coverpoint/bins 数组 vs 单 bin/cross）—— 已完成，自测题全部答对
 - [x] 第四章：功能覆盖率进阶（采样方式对比、覆盖率查询、type_option/option、iff、bins 进阶写法、binsof/intersect）—— 已完成
