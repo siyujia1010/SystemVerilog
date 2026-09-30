@@ -41,9 +41,12 @@
 | [05-assertions/02.operators_cheatsheet.md](05-assertions/02.operators_cheatsheet.md) | SVA 操作符速查表（and/or/intersect/not/throughout/within/first_match/重复操作符等） |
 | [05-assertions/03.req_ack_case_study.md](05-assertions/03.req_ack_case_study.md) | 综合案例：req/ack 握手协议断言（7 条规格、时序图、past_req 影子寄存器、两种 local variable ID 匹配写法对比，含交互动画） |
 
-### 后续章节（占位，陆续补充）
+### 第六章：类（Class）
 
-- 第六章：类的封装与继承
+| 文件 | 内容 |
+|---|---|
+| [06-class/01.class_basics.md](06-class/01.class_basics.md) | class / object / handle、构造函数 `new()` 与 `this`、`static` 成员与方法、封装 `local`/`protected`、句柄赋值 / 浅拷贝 / 深拷贝（含示意图）、package 与作用域 `::` |
+| [06-class/02.inheritance_polymorphism.md](06-class/02.inheritance_polymorphism.md) | `extends` 继承、`super`、父类句柄指向子类对象、父子类同名成员、`virtual` 多态、`$cast` 向下转型、虚类与纯虚方法、UVM 中的 class（`super.new(name, parent)`、`new()` vs `type_id::create()`、sequence item） |
 
 ## 学习进度
 
@@ -59,10 +62,10 @@
 - [x] 第五章：req/ack 握手协议综合案例（7 条规格 + past_req 影子寄存器 + local variable ID 匹配）—— 已完成
 - [x] 第五章：property 内联局部变量写法（id_save），与 sequence 版本对比 + 交互动画 —— 已完成
 - [ ] 后续：功能覆盖率与断言的联合追踪（coverage-driven verification 收尾）
-- [ ] 第六章：类的封装与继承
+- [x] 第六章：类（class/handle、static、封装、深浅拷贝、继承、virtual 多态、$cast）—— 已完成
 
 ## 参考资料
 
-- *Introduction to SystemVerilog*, Ashok B. Mehta —— 第 2/3/4/5 章 数据类型、数组、队列与结构体，第 12.13 节 流操作符，第 13 章 Constrained Random，第 14 章 SystemVerilog Assertions，第 15 章 Functional Coverage，第 16 章 SystemVerilog Processes，第 18 章 Semaphores and Mailboxes（第二、三章笔记末尾另附有完整的小节对应表）
+- *Introduction to SystemVerilog*, Ashok B. Mehta —— 第 2/3/4/5 章 数据类型、数组、队列与结构体，第 12.13 节 流操作符，第 13 章 Constrained Random，第 14 章 SystemVerilog Assertions，第 15 章 Functional Coverage，第 7 章 Packages 与第 8 章 Class，第 16 章 SystemVerilog Processes，第 18 章 Semaphores and Mailboxes（第二、三章笔记末尾另附有完整的小节对应表）
 - *Cracking Digital VLSI Verification Interview*, Ramdas Mozhikunnath & Robin Garg —— 覆盖率、断言与随机约束相关面试题（`solve...before` 第 238 题、`std::randomize` 第 261 题）
 - 个人手写笔记 (dv笔记)

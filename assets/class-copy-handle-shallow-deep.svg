@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 360" width="920" height="360" font-family="-apple-system, 'PingFang SC', 'Microsoft YaHei', 'Noto Sans CJK SC', 'Helvetica Neue', Arial, sans-serif">
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#52606d"/>
+    </marker>
+  </defs>
+  <rect width="920" height="360" fill="#ffffff"/>
+  <text x="20" y="26" font-size="15" font-weight="700" fill="#1f2933">先执行 p1 = new(10, 1)（Packet 的 data=10，内部 Header 的 id=1），再分别执行下面三种写法：</text>
+
+  <!-- ===================== ① 句柄赋值 ===================== -->
+  <g transform="translate(15,0)">
+    <rect x="0" y="40" width="290" height="305" rx="10" fill="#fbfbfc" stroke="#d3d9e0" stroke-width="1.5"/>
+    <text x="14" y="66" font-size="16" font-weight="700" fill="#1f2933">① 句柄赋值</text>
+    <text x="14" y="90" font-size="14" fill="#1f2933" font-family="Menlo, Consolas, monospace">p2 = p1;</text>
+
+    <rect x="15" y="125" width="40" height="26" rx="5" fill="#dbe9fb" stroke="#2b6cb0" stroke-width="1.5"/>
+    <text x="35" y="143" font-size="13" text-anchor="middle" fill="#1f4f8a" font-family="Menlo, Consolas, monospace">p1</text>
+    <rect x="15" y="195" width="40" height="26" rx="5" fill="#dbe9fb" stroke="#2b6cb0" stroke-width="1.5"/>
+    <text x="35" y="213" font-size="13" text-anchor="middle" fill="#1f4f8a" font-family="Menlo, Consolas, monospace">p2</text>
+
+    <rect x="100" y="140" width="80" height="56" rx="6" fill="#fde8c4" stroke="#b42318" stroke-width="2"/>
+    <text x="140" y="163" font-size="13" font-weight="700" text-anchor="middle" fill="#1f2933">Packet</text>
+    <text x="140" y="182" font-size="12" text-anchor="middle" fill="#1f2933">data=10</text>
+    <rect x="205" y="148" width="72" height="40" rx="6" fill="#d8f3e3" stroke="#b42318" stroke-width="2"/>
+    <text x="241" y="165" font-size="13" font-weight="700" text-anchor="middle" fill="#1f2933">Header</text>
+    <text x="241" y="181" font-size="12" text-anchor="middle" fill="#1f2933">id=1</text>
+
+    <g stroke="#52606d" stroke-width="1.5" fill="none" marker-end="url(#ar)">
+      <path d="M55,138 L99,158"/>
+      <path d="M55,208 L99,180"/>
+      <path d="M180,168 L204,168"/>
+    </g>
+    <text x="140" y="214" font-size="11.5" text-anchor="middle" fill="#b42318">共享</text>
+    <text x="241" y="204" font-size="11.5" text-anchor="middle" fill="#b42318">共享</text>
+
+    <text x="14" y="270" font-size="12.5" fill="#1f2933">p2.data = 50 → p1.data 也变成 50</text>
+    <text x="14" y="292" font-size="12.5" fill="#1f2933">p2.hdr.id = 99 → p1.hdr.id 也变成 99</text>
+    <text x="14" y="316" font-size="13.5" font-weight="700" fill="#b42318">1 个 Packet、1 个 Header</text><text x="14" y="336" font-size="13.5" font-weight="700" fill="#b42318">全部共享</text>
+  </g>
+
+  <!-- ===================== ② 浅拷贝 ===================== -->
+  <g transform="translate(315,0)">
+    <rect x="0" y="40" width="290" height="305" rx="10" fill="#fbfbfc" stroke="#d3d9e0" stroke-width="1.5"/>
+    <text x="14" y="66" font-size="16" font-weight="700" fill="#1f2933">② 浅拷贝</text>
+    <text x="14" y="90" font-size="14" fill="#1f2933" font-family="Menlo, Consolas, monospace">p2 = new p1;</text>
+
+    <rect x="15" y="124" width="40" height="26" rx="5" fill="#dbe9fb" stroke="#2b6cb0" stroke-width="1.5"/>
+    <text x="35" y="142" font-size="13" text-anchor="middle" fill="#1f4f8a" font-family="Menlo, Consolas, monospace">p1</text>
+    <rect x="15" y="212" width="40" height="26" rx="5" fill="#dbe9fb" stroke="#2b6cb0" stroke-width="1.5"/>
+    <text x="35" y="230" font-size="13" text-anchor="middle" fill="#1f4f8a" font-family="Menlo, Consolas, monospace">p2</text>
+
+    <rect x="100" y="112" width="80" height="50" rx="6" fill="#fde8c4" stroke="#b8690f" stroke-width="1.5"/>
+    <text x="140" y="133" font-size="13" font-weight="700" text-anchor="middle" fill="#1f2933">Packet</text>
+    <text x="140" y="151" font-size="12" text-anchor="middle" fill="#1f2933">data=10</text>
+    <rect x="100" y="200" width="80" height="50" rx="6" fill="#fde8c4" stroke="#b8690f" stroke-width="1.5"/>
+    <text x="140" y="221" font-size="13" font-weight="700" text-anchor="middle" fill="#1f2933">Packet</text>
+    <text x="140" y="239" font-size="12" text-anchor="middle" fill="#1f2933">data=10</text>
+    <rect x="205" y="161" width="72" height="40" rx="6" fill="#d8f3e3" stroke="#b42318" stroke-width="2"/>
+    <text x="241" y="178" font-size="13" font-weight="700" text-anchor="middle" fill="#1f2933">Header</text>
+    <text x="241" y="194" font-size="12" text-anchor="middle" fill="#1f2933">id=1</text>
+    <text x="241" y="216" font-size="11.5" text-anchor="middle" fill="#b42318">共享</text>
+
+    <g stroke="#52606d" stroke-width="1.5" fill="none" marker-end="url(#ar)">
+      <path d="M55,137 L99,137"/>
+      <path d="M55,225 L99,225"/>
+      <path d="M180,137 L204,172"/>
+      <path d="M180,225 L204,190"/>
+    </g>
+
+    <text x="14" y="270" font-size="12.5" fill="#1f2933">p2.data = 50 → p1.data 仍是 10</text>
+    <text x="14" y="292" font-size="12.5" fill="#1f2933">p2.hdr.id = 99 → p1.hdr.id 也变成 99</text>
+    <text x="14" y="316" font-size="13.5" font-weight="700" fill="#b8690f">2 个 Packet、1 个 Header</text><text x="14" y="336" font-size="13.5" font-weight="700" fill="#b8690f">外层独立，内部共享</text>
+  </g>
+
+  <!-- ===================== ③ 深拷贝 ===================== -->
+  <g transform="translate(615,0)">
+    <rect x="0" y="40" width="290" height="305" rx="10" fill="#fbfbfc" stroke="#d3d9e0" stroke-width="1.5"/>
+    <text x="14" y="66" font-size="16" font-weight="700" fill="#1f2933">③ 深拷贝</text>
+    <text x="14" y="90" font-size="14" fill="#1f2933" font-family="Menlo, Consolas, monospace">p2 = p1.copy();</text>
+
+    <rect x="15" y="124" width="40" height="26" rx="5" fill="#dbe9fb" stroke="#2b6cb0" stroke-width="1.5"/>
+    <text x="35" y="142" font-size="13" text-anchor="middle" fill="#1f4f8a" font-family="Menlo, Consolas, monospace">p1</text>
+    <rect x="15" y="212" width="40" height="26" rx="5" fill="#dbe9fb" stroke="#2b6cb0" stroke-width="1.5"/>
+    <text x="35" y="230" font-size="13" text-anchor="middle" fill="#1f4f8a" font-family="Menlo, Consolas, monospace">p2</text>
+
+    <rect x="100" y="112" width="80" height="50" rx="6" fill="#fde8c4" stroke="#b8690f" stroke-width="1.5"/>
+    <text x="140" y="133" font-size="13" font-weight="700" text-anchor="middle" fill="#1f2933">Packet</text>
+    <text x="140" y="151" font-size="12" text-anchor="middle" fill="#1f2933">data=10</text>
+    <rect x="100" y="200" width="80" height="50" rx="6" fill="#fde8c4" stroke="#b8690f" stroke-width="1.5"/>
+    <text x="140" y="221" font-size="13" font-weight="700" text-anchor="middle" fill="#1f2933">Packet</text>
+    <text x="140" y="239" font-size="12" text-anchor="middle" fill="#1f2933">data=10</text>
+    <rect x="205" y="117" width="72" height="40" rx="6" fill="#d8f3e3" stroke="#1a7f45" stroke-width="1.5"/>
+    <text x="241" y="134" font-size="13" font-weight="700" text-anchor="middle" fill="#1f2933">Header</text>
+    <text x="241" y="150" font-size="12" text-anchor="middle" fill="#1f2933">id=1</text>
+    <rect x="205" y="205" width="72" height="40" rx="6" fill="#d8f3e3" stroke="#1a7f45" stroke-width="1.5"/>
+    <text x="241" y="222" font-size="13" font-weight="700" text-anchor="middle" fill="#1f2933">Header</text>
+    <text x="241" y="238" font-size="12" text-anchor="middle" fill="#1f2933">id=1</text>
+
+    <g stroke="#52606d" stroke-width="1.5" fill="none" marker-end="url(#ar)">
+      <path d="M55,137 L99,137"/>
+      <path d="M55,225 L99,225"/>
+      <path d="M180,137 L204,137"/>
+      <path d="M180,225 L204,225"/>
+    </g>
+
+    <text x="14" y="270" font-size="12.5" fill="#1f2933">p2.data = 50 → p1.data 仍是 10</text>
+    <text x="14" y="292" font-size="12.5" fill="#1f2933">p2.hdr.id = 99 → p1.hdr.id 仍是 1</text>
+    <text x="14" y="316" font-size="13.5" font-weight="700" fill="#1a7f45">2 个 Packet、2 个 Header</text><text x="14" y="336" font-size="13.5" font-weight="700" fill="#1a7f45">全部独立</text>
+  </g>
+</svg>
