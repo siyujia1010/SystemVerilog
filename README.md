@@ -45,7 +45,7 @@
 
 | 文件 | 内容 |
 |---|---|
-| [06-class/01.class_basics.md](06-class/01.class_basics.md) | class / object / handle、构造函数 `new()` 与 `this`、`static` 成员与方法、封装 `local`/`protected`、句柄赋值 / 浅拷贝 / 深拷贝（含示意图）、package 与作用域 `::` |
+| [06-class/01.class_basics.md](06-class/01.class_basics.md) | class / object / handle、构造函数 `new()` 与 `this`、`static` 成员与方法（含 static 成员 vs static/automatic 生命周期示意图）、封装 `local`/`protected`、句柄赋值 / 浅拷贝 / 深拷贝（含示意图）、package 与作用域 `::` |
 | [06-class/02.inheritance_polymorphism.md](06-class/02.inheritance_polymorphism.md) | `extends` 继承、`super`、父类句柄指向子类对象、父子类同名成员、`virtual` 多态、`$cast` 向下转型、虚类与纯虚方法、UVM 中的 class（`super.new(name, parent)`、`new()` vs `type_id::create()`、sequence item） |
 
 ## 学习进度
