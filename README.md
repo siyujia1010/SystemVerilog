@@ -47,6 +47,7 @@
 |---|---|
 | [06-class/01.class_basics.md](06-class/01.class_basics.md) | class / object / handle、构造函数 `new()` 与 `this`、`static` 成员与方法（含 static 成员 vs static/automatic 生命周期示意图）、封装 `local`/`protected`、句柄赋值 / 浅拷贝 / 深拷贝（含示意图）、package 与作用域 `::` |
 | [06-class/02.inheritance_polymorphism.md](06-class/02.inheritance_polymorphism.md) | `extends` 继承、`super`、父类句柄指向子类对象、父子类同名成员、`virtual` 多态、`$cast` 向下转型、虚类与纯虚方法、UVM 中的 class（`super.new(name, parent)`、`new()` vs `type_id::create()`、sequence item） |
+| [06-class/03.handle_argument_ref.md](06-class/03.handle_argument_ref.md) | 句柄作为参数传递：不加 `ref`（handle 副本，能改对象、改不了 handle）vs 加 `ref`（handle 的别名，能改 handle 本身）、对比示意图、用 `int` 类比、`const ref`、判断口诀 |
 
 ## 学习进度
 
@@ -63,6 +64,7 @@
 - [x] 第五章：property 内联局部变量写法（id_save），与 sequence 版本对比 + 交互动画 —— 已完成
 - [ ] 后续：功能覆盖率与断言的联合追踪（coverage-driven verification 收尾）
 - [x] 第六章：类（class/handle、static、封装、深浅拷贝、继承、virtual 多态、$cast）—— 已完成
+- [x] 第六章：句柄作为参数传递（ref vs 非 ref）—— 已完成
 
 ## 参考资料
 
