@@ -46,7 +46,7 @@
 | 文件 | 内容 |
 |---|---|
 | [06-class/01.class_basics.md](06-class/01.class_basics.md) | class / object / handle、构造函数 `new()` 与 `this`、`static` 成员与方法（含 static 成员 vs static/automatic 生命周期示意图）、封装 `local`/`protected`、句柄赋值 / 浅拷贝 / 深拷贝（含示意图）、package 与作用域 `::` |
-| [06-class/02.inheritance_polymorphism.md](06-class/02.inheritance_polymorphism.md) | `extends` 继承、`super`、父类句柄指向子类对象、父子类同名成员、`virtual` 多态、`$cast` 向下转型、虚类与纯虚方法、UVM 中的 class（`super.new(name, parent)`、`new()` vs `type_id::create()`、sequence item） |
+| [06-class/02.inheritance_polymorphism.md](06-class/02.inheritance_polymorphism.md) | `extends` 继承、`super`、父类句柄指向子类对象、父子类同名成员、`virtual` 多态、`$cast` 向下转型、虚类（virtual class）与纯虚方法（规则、三种方法、多层继承、编译错误）、UVM 中的 class（`super.new(name, parent)`、`new()` vs `type_id::create()`、sequence item） |
 | [06-class/03.handle_argument_ref.md](06-class/03.handle_argument_ref.md) | 句柄作为参数传递：不加 `ref`（handle 副本，能改对象、改不了 handle）vs 加 `ref`（handle 的别名，能改 handle 本身）、对比示意图、用 `int` 类比、`const ref`、判断口诀 |
 
 ## 学习进度
